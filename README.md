@@ -14,7 +14,5 @@ This is a personal portfolio website showcasing projects, skills, and contact in
 - **CSS3**: Styling and animations.
 - **JavaScript (script.js)**: Interactive elements like navbar scrolling, mobile menu toggle, and animations.
 
-## How to Use
-1. Clone the repository:
-   ```sh
-   git clone https://github.com/JuniorCarti/portfolio.git
+## Dont Clone Or Fork
+
