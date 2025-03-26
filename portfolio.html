@@ -388,3 +388,73 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile menu toggle
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+
+        hamburger.addEventListener('click', function() {
+            navLinks.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+            });
+        });
+
+        // Animate project details when scrolled to
+        const projectInfos = document.querySelectorAll('.project-info');
+
+        function checkVisibility() {
+            projectInfos.forEach(info => {
+                const infoTop = info.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (infoTop < windowHeight - 100) {
+                    info.classList.add('visible');
+                }
+            });
+        }
+
+        // Initial check
+        checkVisibility();
+
+        // Check on scroll
+        window.addEventListener('scroll', checkVisibility);
+
+        // Animate circular progress on scroll
+        const progressCircles = document.querySelectorAll('.progress-fill');
+        
+        function animateSkills() {
+            progressCircles.forEach(circle => {
+                const circleTop = circle.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (circleTop < windowHeight - 100) {
+                    const percent = circle.style.getPropertyValue('--percent');
+                    circle.style.setProperty('--percent', percent);
+                }
+            });
+        }
+
+        // Initial check
+        animateSkills();
+
+        // Check on scroll
+        window.addEventListener('scroll', animateSkills);
+    </script>
+</body>
+</html>
