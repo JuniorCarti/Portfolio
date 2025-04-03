@@ -779,7 +779,7 @@ PROJECTS SECTION - CARD BASED LAYOUT
     gap: var(--space-sm);
 }
 
-/* Project Details */
+/* Project Details Section*/
 .project-details {
     display: flex;
     flex-direction: column;
