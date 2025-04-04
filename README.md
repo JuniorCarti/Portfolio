@@ -14,5 +14,4 @@ This is a personal portfolio website showcasing projects, skills, and contact in
 - **CSS3**: Styling and animations.
 - **JavaScript (script.js)**: Interactive elements like navbar scrolling, mobile menu toggle, and animations.
 
-## Dont Clone Or Fork
 
