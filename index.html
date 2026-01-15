@@ -1,341 +1,444 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ridge - Software Engineer & Mobile Developer Portfolio">
     <title>Ridge | Software Engineer & Mobile Developer</title>
-    
+
     <!-- Font Imports -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=menu" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Ensure all sections are visible on load */
+        section {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        .glass-card,
+        .section-header,
+        .skills-grid,
+        .education-timeline,
+        .projects-grid,
+        .interests-grid,
+        .about-content {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+    </style>
 </head>
+
 <body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+    </div>
+
     <!-- Navigation -->
-    <nav class="navbar">
+    <nav class="navbar" id="navbar">
         <div class="container">
-            <div class="logo">E-service <span>Solutions.</span></div>
-            <ul class="nav-links">
-                <li><a href="#about">About</a></li>
-                <li><a href="#Expertise">Skills</a></li>
-                <li><a href="#education">Education</a></li>
-                <li><a href="#interests-section">Interests</a></li>
-                <li><a href="#projects">Projects</a></li>
-                <li><a href="#contact">Contact</a></li>
+            <div class="logo">
+                <span class="logo-text">Ridge</span>
+                <span class="logo-dot">.</span>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#skills" class="nav-link">Skills</a></li>
+                <li><a href="#education" class="nav-link">Education</a></li>
+                <li><a href="#projects" class="nav-link">Projects</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
             </ul>
-            <span class="material-symbols-outlined hamburger">menu</span>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                <span class="material-symbols-outlined">dark_mode</span>
+            </button>
+            <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
         </div>
     </nav>
 
     <!-- Mobile Menu -->
-    <div class="mobile-menu">
-        <ul class="nav-links">
-            <li><a href="#about">About</a></li>
-            <li><a href="#Expertise">Skills</a></li>
-            <li><a href="#education">Education</a></li>
-            <li><a href="#interests-section">Interests</a></li>
-            <li><a href="#projects">Projects</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-content">
+            <a href="#home" class="mobile-nav-link">Home</a>
+            <a href="#about" class="mobile-nav-link">About</a>
+            <a href="#skills" class="mobile-nav-link">Skills</a>
+            <a href="#education" class="mobile-nav-link">Education</a>
+            <a href="#projects" class="mobile-nav-link">Projects</a>
+            <a href="#contact" class="mobile-nav-link">Contact</a>
+        </div>
     </div>
 
-    <!-- Hero Section -->
-    <section class="hero section">
+    <!-- Hero Section with Video Background -->
+    <section id="home" class="hero section">
+        <!-- Premium Video Background -->
+        <div class="hero-video-container">
+            <video class="hero-video" autoplay loop muted playsinline poster="assets/hero-poster.jpg">
+                <!-- Fallback video sources -->
+                <source src="assets/hero.mp4" type="video/mp4">
+                <!-- Fallback message for browsers that don't support video -->
+                Your browser does not support the video tag.
+            </video>
+
+            <!-- Dark Gradient Overlay for Text Readability -->
+            <div class="hero-overlay"></div>
+        </div>
+
         <div class="container">
             <div class="hero-content">
-                <h1>Hello, I'm <span class="text-primary">Ridge</span></h1>
-                <p>A passionate <span class="text-primary">Mobile Developer | Software Engineer | Flutter Specialist</span> creating cross-platform solutions with cutting-edge technology.</p>
-                <div class="hero-cta">
-                    <a href="#projects" class="btn btn-primary">View My Work</a>
-                    <a href="#contact" class="btn btn-outline">Contact Me</a>
+                <div class="hero-text">
+                    <div class="greeting">
+                        <span class="wave">👋</span>
+                        <span>Hello, I'm</span>
+                    </div>
+                    <h1 class="hero-title">
+                        <span class="gradient-text">Ridge</span>
+                        <span class="typing-text"></span>
+                    </h1>
+                    <p class="hero-description">
+                        A passionate <strong>Mobile Developer</strong> | <strong>Software Engineer</strong> |
+                        <strong>Flutter Specialist</strong>
+                        creating cross-platform solutions with cutting-edge technology.
+                    </p>
+                    <div class="hero-cta">
+                        <a href="#projects" class="btn btn-primary">
+                            <span>View My Work</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                        <a href="#contact" class="btn btn-secondary">
+                            <span>Get In Touch</span>
+                            <i class="fas fa-envelope"></i>
+                        </a>
+                    </div>
+                    <div class="hero-social">
+                        <a href="https://www.linkedin.com/in/ridge-junior-2bb333204/" target="_blank"
+                            class="social-icon" aria-label="LinkedIn">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="https://github.com/JuniorCarti" target="_blank" class="social-icon"
+                            aria-label="GitHub">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="https://wa.me/254113245740" target="_blank" class="social-icon" aria-label="WhatsApp">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                        <a href="mailto:ridgejunior204@gmail.com" class="social-icon" aria-label="Email">
+                            <i class="fas fa-envelope"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="hero-avatar-wrapper">
+                    <div class="hero-avatar">
+                        <div class="avatar-glow"></div>
+                        <img src="Images/profile_img.jpg" alt="Ridge - Software Developer" class="avatar-img">
+                    </div>
                 </div>
             </div>
-            <div class="hero-image">
-                <img src="Images/profile_img.jpg" alt="Ridge - Software Developer">
+            <div class="scroll-indicator">
+                <span>Scroll Down</span>
+                <div class="mouse">
+                    <div class="wheel"></div>
+                </div>
             </div>
         </div>
     </section>
-    
+
     <!-- About Section -->
     <section id="about" class="about section">
         <div class="container">
+            <div class="section-header">
+                <span class="section-tag">About Me</span>
+                <h2 class="section-title">Crafting Digital <span class="gradient-text">Experiences</span></h2>
+                <p class="section-subtitle">Transforming ideas into innovative mobile solutions</p>
+            </div>
             <div class="about-content">
                 <div class="about-text">
-                    <h2>About <span class="text-primary">Me</span></h2>
-                    <p>I'm a software developer with 2 years of experience specializing in mobile development and cross-platform solutions. My expertise spans Flutter development, Android native applications, and backend integration.</p>
-                    <p>Currently, I'm focused on building responsive mobile applications and expanding my knowledge in networking and cybersecurity through Cisco certifications at EldoHub Academy.</p>
-                    <p>When I'm not coding, you can find me exploring new technologies, contributing to open-source projects, or mentoring aspiring developers.</p>
-                    <div class="about-cta">
-                        <a href="#education" class="btn btn-primary">My Education</a>
-                        <a href="#Expertise" class="btn btn-outline">My Skills</a>
+                    <div class="about-card glass-card scroll-slide-up">
+                        <p class="scroll-stagger-1">I'm a software developer with <strong>2 years of experience</strong>
+                            specializing in mobile
+                            development and cross-platform solutions. My expertise spans Flutter development, Android
+                            native applications, and backend integration.</p>
+                        <p class="scroll-stagger-2">I hold certifications in Networking & Cybersecurity (completed CCNA
+                            1, 2, and 3), am a
+                            Certified Software Engineer from Power Learn Project (PLP Africa), and graduated from
+                            EldoHub Academy. Additionally, I'm an AWS Certified Cloud Practitioner, demonstrating my
+                            commitment to continuous learning and professional growth.</p>
+                        <p class="scroll-stagger-3">When I'm not coding, I enjoy exploring new technologies,
+                            contributing to open-source
+                            projects, and mentoring aspiring developers.</p>
+                    </div>
+                    <div class="about-stats">
+                        <div class="stat-card scroll-fade-in">
+                            <div class="stat-number" data-target="2">0</div>
+                            <div class="stat-label">Years Experience</div>
+                        </div>
+                        <div class="stat-card scroll-fade-in">
+                            <div class="stat-number" data-target="10">0</div>
+                            <div class="stat-label">Projects Completed</div>
+                        </div>
+                        <div class="stat-card scroll-fade-in">
+                            <div class="stat-number" data-target="50">0</div>
+                            <div class="stat-label">Happy Clients</div>
+                        </div>
                     </div>
                 </div>
-                <div class="about-image">
-                    <img src="https://images.unsplash.com/photo-1555099962-4199c345e5dd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="About Ridge">
+                <div class="about-image scroll-blur-in">
+                    <div class="image-container">
+                        <div class="image-border"></div>
+                        <img src="https://images.unsplash.com/photo-1555099962-4199c345e5dd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                            alt="About Ridge">
+                    </div>
                 </div>
             </div>
         </div>
     </section>
-    
-    <!-- Education Section -->
-    <section class="education-section section" id="education">
-        <div class="container">
-            <h2 class="section-title">Education <span class="highlight">Background</span></h2>
-            <p class="section-subtitle">My academic journey and professional certifications</p>
-
-            <div class="education-timeline">
-                <!-- University -->
-                <div class="education-item">
-                    <div class="education-date">2017 - 2021</div>
-                    <div class="education-content">
-                        <h3 class="education-degree">Bachelor of Science in Information Communication Technology</h3>
-                        <p class="education-institution">Jaramogi Oginga Odinga University of Science and Technology, Kenya</p>
-                        <div class="education-details">
-                            <p>Specialized in Software Engineering and Cybersecurity. Graduated with Second Class Honors Lower Division.</p>
-                            <ul class="education-highlights">
-                                <li>Specialization: Software Engineering & Cybersecurity</li>
-                                <li>Senior Project: Developed a mobile application with Flutter framework</li>
-                                <li>Coursework: Advanced Algorithms, Network Security, Mobile Development</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Secondary -->
-                <div class="education-item">
-                    <div class="education-date">2016</div>
-                    <div class="education-content">
-                        <h3 class="education-degree">Kenya Certificate of Secondary Education (KCSE)</h3>
-                        <p class="education-institution">High School, Kenya</p>
-                        <div class="education-details">
-                            <p>Completed secondary education with a focus on sciences and mathematics.</p>
-                            <ul class="education-highlights">
-                                <li>Achieved Grade B- (Minus)</li>
-                                <li>Key Subjects: Mathematics, Physics, Computer Studies</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ALX -->
-                <div class="education-item">
-                    <div class="education-date">2021 - 2022</div>
-                    <div class="education-content">
-                        <h3 class="education-degree">ALX Software Engineering Program</h3>
-                        <p class="education-institution">Online Certification</p>
-                        <div class="education-details">
-                            <p>Completed intensive online software engineering program with focus on full-stack development.</p>
-                            <ul class="education-highlights">
-                                <li>Full-stack development fundamentals</li>
-                                <li>Git and GitHub version control</li>
-                                <li>Data structures and algorithms</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Cisco -->
-                <div class="education-item">
-                    <div class="education-date">2025 - Present</div>
-                    <div class="education-content">
-                        <h3 class="education-degree">Networking And Cyber Security Certification CISCO</h3>
-                        <p class="education-institution">Eldohub Academy</p>
-                        <div class="education-details">
-                            <p>Currently pursuing Cisco certifications in networking and cybersecurity.</p>
-                            <ul class="education-highlights">
-                                <li>Network configuration and administration</li>
-                                <li>Cybersecurity threat analysis</li>
-                                <li>Network security protocols</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Certifications -->
-                <div class="education-item">
-                    <div class="education-date">Certifications</div>
-                    <div class="education-content">
-                        <h3 class="education-degree">Professional Credentials</h3>
-                        <div class="certifications-grid">
-                            <div class="certification-item">
-                                <div class="certification-badge">
-                                    <i class="fas fa-shield-alt"></i>
-                                </div>
-                                <div>
-                                    <h4>Introduction to Cybersecurity</h4>
-                                    <p>Cybersecurity Fundamentals • 2023</p>
-                                </div>
-                            </div>
-                            
-                            <div class="certification-item">
-                                <div class="certification-badge">
-                                    <i class="fab fa-html5"></i>
-                                </div>
-                                <div>
-                                    <h4>HTML & CSS (Beginner to Advanced)</h4>
-                                    <p>Web Development • 2022</p>
-                                </div>
-                            </div>
-                            
-                            <div class="certification-item">
-                                <div class="certification-badge">
-                                    <i class="fas fa-network-wired"></i>
-                                </div>
-                                <div>
-                                    <h4>CISCO Certified (In Progress)</h4>
-                                    <p>CCNA & CCNP Security • 2025</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-              
-            <!-- CV Download Section -->
-            <div class="cv-download-section">
-                <div class="cv-preview">
-                    <div class="cv-preview-image">
-                        <img src="https://images.unsplash.com/photo-1602407294553-6ac9170b3ed0?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cmVzdW1lfGVufDB8MHwwfHx8MA%3D%3D" alt="CV Preview">
-                        <div class="cv-overlay">
-                            <i class="fas fa-file-pdf"></i>
-                            <span>Professional CV</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="cv-download-content">
-                    <h3>Download My Complete Curriculum Vitae</h3>
-                    <p>Get a detailed overview of my professional journey, skills, and achievements in PDF or Word format.</p>
-                    <div class="download-options">
-                        <a href="Documents/Curriculum Vitae Ridge Junior - Copy.pdf" download class="btn btn-primary">
-                            <i class="fas fa-download"></i> Download CV (PDF)
-                        </a>
-                        <a href="Documents/Curriculum Vitae Ridge Junior.docx" download class="btn btn-outline">
-                            <i class="fas fa-file-word"></i> Download CV (DOCX)
-                        </a>
-                    </div>
-                    <p class="file-size">File size: 1.1MB (Updated: May 2025)</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <hr style="margin: var(--space-xl) auto; max-width: 1200px; border: none; border-top: 1px solid var(--gray-light);">
 
     <!-- Skills Section -->
-    <section class="Expertise section" id="Expertise">
+    <section id="skills" class="skills section">
         <div class="container">
-            <h2 class="section-title">Skills And <span class="highlight">Expertise</span></h2>
-            <p class="section-subtitle">My technical competencies and professional capabilities</p>
-
-            <div class="skills-container">
-                <!-- Flutter Skill -->
-                <div class="skill-card" style="background-image: url('https://images.unsplash.com/photo-1555099962-4199c345e5dd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80');">
-                    <div class="skill-icon" style="background-image: url('https://cdn-icons-png.flaticon.com/512/5968/5968534.png');"></div>
-                    <div class="skill-content">
-                        <h3 class="skill-name">Flutter & Dart</h3>
-                        <div class="circular-progress">
-                            <svg viewBox="0 0 100 100">
-                                <defs>
-                                    <linearGradient id="flutter-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                        <stop offset="0%" stop-color="#02569B" />
-                                        <stop offset="100%" stop-color="#13B9FD" />
-                                    </linearGradient>
-                                </defs>
-                                <circle class="progress-circle progress-bg" cx="50" cy="50" r="45"></circle>
-                                <circle class="progress-circle progress-fill" cx="50" cy="50" r="45" style="--percent: 90"></circle>
-                            </svg>
-                            <div class="progress-value">90</div>
+            <div class="section-header">
+                <span class="section-tag">My Expertise</span>
+                <h2 class="section-title">Skills & <span class="gradient-text">Technologies</span></h2>
+                <p class="section-subtitle">Technologies I work with to bring ideas to life</p>
+            </div>
+            <div class="skills-grid">
+                <div class="skill-card glass-card scroll-slide-up" data-skill="90">
+                    <div class="skill-header">
+                        <div class="skill-icon flutter-icon">
+                            <img src="Images/flutter_icon.png" alt="Flutter">
                         </div>
-                        <p class="skill-description">Cross-platform mobile development for both iOS & Android</p>
+                        <h3>Flutter & Dart</h3>
                     </div>
-                </div>
-                
-                <!-- Java Skill -->
-                <div class="skill-card" style="background-image: url('https://images.pexels.com/photos/894696/pexels-photo-894696.jpeg?auto=compress&cs=tinysrgb&w=600');">
-                    <div class="skill-icon" style="background-image: url('https://cdn-icons-png.flaticon.com/512/226/226777.png');"></div>
-                    <div class="skill-content">
-                        <h3 class="skill-name">Java</h3>
-                        <div class="circular-progress">
-                            <svg viewBox="0 0 100 100">
-                                <defs>
-                                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                        <stop offset="0%" stop-color="#6c63ff" />
-                                        <stop offset="100%" stop-color="#4d44db" />
-                                    </linearGradient>
-                                </defs>
-                                <circle class="progress-circle progress-bg" cx="50" cy="50" r="45"></circle>
-                                <circle class="progress-circle progress-fill" cx="50" cy="50" r="45" style="--percent: 85"></circle>
-                            </svg>
-                            <div class="progress-value">85</div>
+                    <div class="skill-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="--progress: 90%"></div>
                         </div>
-                        <p class="skill-description">2 years experience in Android development with Java</p>
+                        <span class="progress-text">90%</span>
                     </div>
-                </div>
-                    
-                <!-- HTML & CSS Skill -->
-                <div class="skill-card" style="background-image: url('https://images.unsplash.com/photo-1547658719-da2b51169166?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80');">
-                    <div class="skill-icon" style="background-image: url('https://cdn-icons-png.flaticon.com/512/732/732212.png');"></div>
-                    <div class="skill-content">
-                        <h3 class="skill-name">HTML & CSS</h3>
-                        <div class="circular-progress">
-                            <svg viewBox="0 0 100 100">
-                                <circle class="progress-circle progress-bg" cx="50" cy="50" r="45"></circle>
-                                <circle class="progress-circle progress-fill" cx="50" cy="50" r="45" style="--percent: 90"></circle>
-                            </svg>
-                            <div class="progress-value">90</div>
-                        </div>
-                        <p class="skill-description">Modern responsive web design with accessibility in mind</p>
-                    </div>
+                    <p class="skill-description">Cross-platform mobile development for both iOS & Android</p>
                 </div>
 
-                <!-- Android Studio Skill -->
-                <div class="skill-card" style="background-image: url('https://images.unsplash.com/photo-1657885428171-922acd24d134?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');">
-                    <div class="skill-icon" style="background-image: url('https://cdn-icons-png.flaticon.com/512/226/226772.png');"></div>
-                    <div class="skill-content">
-                        <h3 class="skill-name">Android Studio</h3>
-                        <div class="circular-progress">
-                            <svg viewBox="0 0 100 100">
-                                <circle class="progress-circle progress-bg" cx="50" cy="50" r="45"></circle>
-                                <circle class="progress-circle progress-fill" cx="50" cy="50" r="45" style="--percent: 85"></circle>
-                            </svg>
-                            <div class="progress-value">85</div>
+                <div class="skill-card glass-card scroll-slide-up" data-skill="85">
+                    <div class="skill-header">
+                        <div class="skill-icon java-icon">
+                            <i class="fab fa-java"></i>
                         </div>
-                        <p class="skill-description">Expert in Android app development using Android Studio IDE</p>
+                        <h3>Java</h3>
+                    </div>
+                    <div class="skill-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="--progress: 85%"></div>
+                        </div>
+                        <span class="progress-text">85%</span>
+                    </div>
+                    <p class="skill-description">2 years experience in Android development with Java</p>
+                </div>
+
+                <div class="skill-card glass-card scroll-slide-up" data-skill="90">
+                    <div class="skill-header">
+                        <div class="skill-icon web-icon">
+                            <i class="fab fa-html5"></i>
+                        </div>
+                        <h3>HTML & CSS</h3>
+                    </div>
+                    <div class="skill-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="--progress: 90%"></div>
+                        </div>
+                        <span class="progress-text">90%</span>
+                    </div>
+                    <p class="skill-description">Modern responsive web design with accessibility in mind</p>
+                </div>
+
+                <div class="skill-card glass-card scroll-slide-up" data-skill="85">
+                    <div class="skill-header">
+                        <div class="skill-icon android-icon">
+                            <i class="fab fa-android"></i>
+                        </div>
+                        <h3>Android Studio</h3>
+                    </div>
+                    <div class="skill-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="--progress: 85%"></div>
+                        </div>
+                        <span class="progress-text">85%</span>
+                    </div>
+                    <p class="skill-description">Expert in Android app development using Android Studio IDE</p>
+                </div>
+
+                <div class="skill-card glass-card scroll-slide-up" data-skill="75">
+                    <div class="skill-header">
+                        <div class="skill-icon python-icon">
+                            <i class="fab fa-python"></i>
+                        </div>
+                        <h3>Python</h3>
+                    </div>
+                    <div class="skill-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="--progress: 75%"></div>
+                        </div>
+                        <span class="progress-text">75%</span>
+                    </div>
+                    <p class="skill-description">Python for scripting, data analysis, and backend tasks; familiar with
+                        MongoDB</p>
+                </div>
+
+                <div class="skill-card glass-card scroll-slide-up" data-skill="75">
+                    <div class="skill-header">
+                        <div class="skill-icon security-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>Cybersecurity</h3>
+                    </div>
+                    <div class="skill-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="--progress: 75%"></div>
+                        </div>
+                        <span class="progress-text">75%</span>
+                    </div>
+                    <p class="skill-description">Network security, threat analysis, and security protocols</p>
+                </div>
+
+                <div class="skill-card glass-card scroll-slide-up" data-skill="75">
+                    <div class="skill-header">
+                        <div class="skill-icon aws-icon">
+                            <i class="fab fa-aws"></i>
+                        </div>
+                        <h3>AWS (Cloud)</h3>
+                    </div>
+                    <div class="skill-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="--progress: 75%"></div>
+                        </div>
+                        <span class="progress-text">75%</span>
+                    </div>
+                    <p class="skill-description">Cloud fundamentals, deployment basics, and AWS services — AWS Certified
+                        Cloud Practitioner</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Education Section -->
+    <section id="education" class="education section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">My Journey</span>
+                <h2 class="section-title">Education <span class="gradient-text">Background</span></h2>
+                <p class="section-subtitle">My academic journey and professional certifications</p>
+            </div>
+            <div class="education-timeline">
+                <div class="timeline-item glass-card scroll-slide-up">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">2017 - 2021</div>
+                        <h3>Bachelor of Science in Information Communication Technology</h3>
+                        <p class="timeline-institution">Jaramogi Oginga Odinga University of Science and Technology,
+                            Kenya</p>
+                        <p>Specialized in Software Engineering and Cybersecurity. Graduated with Second Class Honors
+                            Lower Division.</p>
+                        <ul class="timeline-highlights">
+                            <li>Specialization: Software Engineering & Cybersecurity</li>
+                            <li>Senior Project: Developed a mobile application using the Flutter framework</li>
+                            <li>Key Coursework: Advanced Algorithms, Network Security, Mobile Development</li>
+                        </ul>
                     </div>
                 </div>
 
-                <!-- Python Skill -->
-                <div class="skill-card" style="background-image: url('https://images.pexels.com/photos/1181359/pexels-photo-1181359.jpeg?auto=compress&cs=tinysrgb&w=600');">
-                    <div class="skill-icon" style="background-image: url('https://cdn-icons-png.flaticon.com/512/5968/5968350.png');"></div>
-                    <div class="skill-content">
-                        <h3 class="skill-name">Python</h3>
-                        <div class="circular-progress">
-                            <svg viewBox="0 0 100 100">
-                                <circle class="progress-circle progress-bg" cx="50" cy="50" r="45"></circle>
-                                <circle class="progress-circle progress-fill" cx="50" cy="50" r="45" style="--percent: 75"></circle>
-                            </svg>
-                            <div class="progress-value">75</div>
-                        </div>
-                        <p class="skill-description">Experienced in Python development, MongoDB, Data analysis</p>
+                <div class="timeline-item glass-card scroll-slide-up">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">2016</div>
+                        <h3>Kenya Certificate of Secondary Education (KCSE)</h3>
+                        <p class="timeline-institution">High School, Kenya</p>
+                        <p>Completed secondary education with a focus on sciences and mathematics.</p>
+                        <ul class="timeline-highlights">
+                            <li>Achieved Grade B- (Minus)</li>
+                            <li>Key Subjects: Mathematics, Physics, Computer Studies</li>
+                        </ul>
                     </div>
                 </div>
 
-                <!-- Cybersecurity Skill -->
-                <div class="skill-card" style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80');">
-                    <div class="skill-icon" style="background-image: url('https://cdn-icons-png.flaticon.com/512/2489/2489077.png');"></div>
-                    <div class="skill-content">
-                        <h3 class="skill-name">Networking & Cybersecurity</h3>
-                        <div class="circular-progress">
-                            <svg viewBox="0 0 100 100">
-                                <circle class="progress-circle progress-bg" cx="50" cy="50" r="45"></circle>
-                                <circle class="progress-circle progress-fill" cx="50" cy="50" r="45" style="--percent: 75"></circle>
-                            </svg>
-                            <div class="progress-value">75</div>
-                        </div>
-                        <p class="skill-description">Network security, CI/CD, cloud, and container security</p>
+                <div class="timeline-item glass-card scroll-slide-up">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">January 2025 - October 2025</div>
+                        <h3>Cisco Networking & Cybersecurity Program (CCNA 1, 2 & 3 Completed)</h3>
+                        <p class="timeline-institution">EldoHub Academy</p>
+                        <p>Completed comprehensive Cisco networking and cybersecurity certification program covering
+                            CCNA 1, 2, and 3.</p>
+                        <ul class="timeline-highlights">
+                            <li>Network configuration and administration</li>
+                            <li>Cybersecurity threat analysis</li>
+                            <li>Network security protocols</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="timeline-item glass-card scroll-slide-up">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">February 2025 - May 2025</div>
+                        <h3>Power Learn Project (PLP Africa) — Software Engineering Program</h3>
+                        <p class="timeline-institution">16 weeks program</p>
+                        <p>Completed intensive software engineering program with specialized focus on mobile development
+                            during the final 8 weeks.</p>
+                        <ul class="timeline-highlights">
+                            <li>16-week comprehensive software engineering curriculum</li>
+                            <li>Final 8 weeks specialized in Mobile Development (Dart & Flutter)</li>
+                            <li>Graduated December 2025 as Certified Software Engineer</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="timeline-item glass-card">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">October 2025 - December 2025</div>
+                        <h3>Learnly Africa — AWS re/Start Program</h3>
+                        <p class="timeline-institution">AWS re/Start Certification Program</p>
+                        <p>Completed AWS re/Start program focused on cloud computing fundamentals and AWS services.</p>
+                        <ul class="timeline-highlights">
+                            <li>Achieved AWS Certified Cloud Practitioner certification</li>
+                            <li>Cloud fundamentals and deployment practices</li>
+                            <li>Comprehensive understanding of AWS core services</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CV Download Section -->
+            <div class="cv-section glass-card">
+                <div class="cv-content">
+                    <div class="cv-icon">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <div class="cv-text">
+                        <h3>Download My Complete Curriculum Vitae</h3>
+                        <p>Get a detailed overview of my professional journey, skills, and achievements in PDF or Word
+                            format.</p>
+                    </div>
+                    <div class="cv-buttons">
+                        <a href="Documents/Curriculum Vitae Ridge Junior - Copy.pdf" download class="btn btn-primary">
+                            <i class="fas fa-download"></i>
+                            <span>Download PDF</span>
+                        </a>
+                        <a href="Documents/Curriculum Vitae Ridge Junior.docx" download class="btn btn-secondary">
+                            <i class="fas fa-file-word"></i>
+                            <span>Download DOCX</span>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -343,38 +446,117 @@
     </section>
 
     <!-- Interests Section -->
-    <section class="interests-section" id="interests-section">
-        <h2 class="section-title">Beyond the Code</h2>
-        <div class="interests-grid">
-            <!-- Open Source Card -->
-            <div class="interest-card" style="--bg-image: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80')">
-                <div class="card-content">
+    <section id="interests" class="interests section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Beyond Code</span>
+                <h2 class="section-title">My <span class="gradient-text">Interests</span></h2>
+                <p class="section-subtitle">Areas I'm passionate about exploring</p>
+            </div>
+            <div class="interests-grid">
+                <div class="interest-card glass-card">
+                    <div class="interest-icon">
+                        <i class="fab fa-github"></i>
+                    </div>
                     <h3>Open Source</h3>
-                    <p>Contributing to and maintaining projects that push tech forward</p>
+                    <p>Contributing to and maintaining projects that push technology forward</p>
                 </div>
-            </div>
-            
-            <!-- AI/ML Card -->
-            <div class="interest-card" style="--bg-image: url('https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80')">
-                <div class="card-content">
+
+                <div class="interest-card glass-card">
+                    <div class="interest-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
                     <h3>AI/ML</h3>
-                    <p>Experimenting with LLMs, computer vision, and generative models</p>
+                    <p>Experimenting with large language models, computer vision, and generative AI</p>
                 </div>
-            </div>
-            
-            <!-- DevOps Card -->
-            <div class="interest-card" style="--bg-image: url('https://images.unsplash.com/photo-1629904853893-c2c8981a1dc5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80')">
-                <div class="card-content">
+
+                <div class="interest-card glass-card">
+                    <div class="interest-icon">
+                        <i class="fas fa-server"></i>
+                    </div>
                     <h3>DevOps</h3>
-                    <p>Automating infrastructure with Kubernetes, Terraform, and CI/CD</p>
+                    <p>Infrastructure automation using tools like Kubernetes, Terraform, and CI/CD pipelines</p>
+                </div>
+
+                <div class="interest-card glass-card">
+                    <div class="interest-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Cybersecurity</h3>
+                    <p>Participating in CTF competitions and ethical hacking challenges</p>
                 </div>
             </div>
-            
-            <!-- Cybersecurity Card -->
-            <div class="interest-card" style="--bg-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80')">
-                <div class="card-content">
-                    <h3>Cybersecurity</h3>
-                    <p>CTF competitions and ethical hacking challenges</p>
+        </div>
+    </section>
+
+    <!-- Hackathons & Innovation Challenges Section -->
+    <section id="hackathons" class="hackathons section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Achievements</span>
+                <h2 class="section-title">Hackathons & <span class="gradient-text">Innovation Challenges</span></h2>
+                <p class="section-subtitle">Competitive programming and innovation challenge participation</p>
+            </div>
+            <div class="education-timeline">
+                <div class="timeline-item glass-card">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">March 2025</div>
+                        <h3>Cyber Security Challenge Hackathon</h3>
+                        <p class="timeline-institution">EldoHub Academy</p>
+                        <p>Winner of the competition, recognized for innovative cybersecurity problem-solving.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item glass-card">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">2025</div>
+                        <h3>Eldoret Innovation Challenge</h3>
+                        <p class="timeline-institution">Uasin Gishu County</p>
+                        <p>Project selected and recognized; presented the solution to the U.S. Ambassador to Kenya,
+                            Carla Benini.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item glass-card">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">2025</div>
+                        <h3>GeekLucha Hackathon</h3>
+                        <p class="timeline-institution">South Africa</p>
+                        <p>Ranked 5th out of over 100 applications.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item glass-card">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">2025</div>
+                        <h3>Kenya AI Summit Hackathon</h3>
+                        <p class="timeline-institution">Kenya</p>
+                        <p>Project Lead; team selected to finals and ranked 4th out of 70 teams.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item glass-card">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">2025</div>
+                        <h3>Phoenix Ke Analytics Hackathon</h3>
+                        <p class="timeline-institution">Nairobi</p>
+                        <p>Team Lead; ranked 4th out of 8 teams.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item glass-card">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">2025</div>
+                        <h3>Impact4Hub Hackathon</h3>
+                        <p class="timeline-institution">Kenya</p>
+                        <p>Team Lead; ranked 4th out of over 12 teams.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -383,129 +565,58 @@
     <!-- Projects Section -->
     <section id="projects" class="projects section">
         <div class="container">
-            <h2 class="section-title">Featured <span class="highlight">Projects</span></h2>
-            <p class="section-subtitle">Selected work demonstrating my skills and capabilities</p>
-            
-            <div class="projects-container">
+            <div class="section-header">
+                <span class="section-tag">Portfolio</span>
+                <h2 class="section-title">Featured <span class="gradient-text">Projects</span></h2>
+                <p class="section-subtitle">Selected work demonstrating my skills and capabilities</p>
+            </div>
+
+            <div class="projects-grid">
                 <!-- Haraka Afya Project -->
-                <div class="project-card">
+                <div class="project-card glass-card scroll-slide-up">
                     <div class="project-image">
-                        <img src="https://images.unsplash.com/photo-1581595219315-a187dd40c322?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Haraka Afya">
+                        <img src="https://images.unsplash.com/photo-1581595219315-a187dd40c322?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80"
+                            alt="Haraka Afya">
+                        <div class="project-overlay">
+                            <a href="#haraka-afya-details" class="project-link">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
                     </div>
                     <div class="project-content">
                         <h3 class="project-title">Haraka Afya</h3>
-                        <p class="project-description">A cross-platform health application for Android and iOS providing quick access to medical services and health information.</p>
+                        <p class="project-description">A cross-platform health application for Android and iOS providing
+                            quick access to medical services and health information.</p>
                         <div class="project-tags">
                             <span class="project-tag">Flutter</span>
                             <span class="project-tag">Dart</span>
                             <span class="project-tag">Firebase</span>
                         </div>
-                        <div class="project-links">
-                            <a href="#haraka-afya-details" class="btn btn-outline">View Details</a>
-                        </div>
                     </div>
                 </div>
-                
+
                 <!-- Shopfinity Project -->
-                <div class="project-card">
+                <div class="project-card glass-card scroll-slide-up">
                     <div class="project-image">
                         <img src="Images/image_1_shopfinity.jpg" alt="Shopfinity">
+                        <div class="project-overlay">
+                            <a href="#shopfinity-details" class="project-link">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                            <a href="https://play.google.com/store" target="_blank" class="project-link">
+                                <i class="fab fa-google-play"></i>
+                            </a>
+                        </div>
                     </div>
                     <div class="project-content">
                         <h3 class="project-title">Shopfinity</h3>
-                        <p class="project-description">An e-commerce platform for bookshops to manage sales, inventory, and bulk orders efficiently.</p>
+                        <p class="project-description">An e-commerce platform for bookshops to manage sales, inventory,
+                            and bulk orders efficiently.</p>
                         <div class="project-tags">
                             <span class="project-tag">Android</span>
                             <span class="project-tag">Java</span>
                             <span class="project-tag">Firebase</span>
                         </div>
-                        <div class="project-links">
-                            <a href="#shopfinity-details" class="btn btn-outline">View Details</a>
-                            <a href="https://play.google.com/store" target="_blank" class="btn btn-primary">Play Store</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Project Details Sections -->
-    <section class="section bg-light">
-        <div class="container">
-            <!-- Haraka Afya Details -->
-            <div id="haraka-afya-details" class="project-details">
-                <div class="project-info">
-                    <h2>Haraka Afya</h2>
-                    <p>A cross-platform health application developed with Flutter that provides quick access to medical services, health information, and emergency contacts. The app serves both Android and iOS users with a single codebase.</p>
-                    
-                    <h3>Key Features:</h3>
-                    <ul>
-                        <li>Real-time doctor consultation booking</li>
-                        <li>Medicine reminder system with notifications</li>
-                        <li>Emergency SOS with location sharing</li>
-                        <li>Health articles and symptom checker</li>
-                        <li>Multi-language support</li>
-                        <li>Offline functionality for critical features</li>
-                    </ul>
-                    
-                    <h3>Technologies Used:</h3>
-                    <p>Flutter, Dart, Firebase, Google Maps API, BLoC pattern, Hive for local storage</p>
-                    
-                    <h3>Impact:</h3>
-                    <p>The app has helped thousands of users access healthcare services quickly, especially in remote areas with limited medical facilities.</p>
-                </div>
-                
-                <div class="project-gallery">
-                    <div class="gallery-item">
-                        <img src="https://images.unsplash.com/photo-1581595219315-a187dd40c322?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Haraka Afya Dashboard">
-                    </div>
-                    <div class="gallery-item">
-                        <img src="https://images.unsplash.com/photo-1584824486509-112e4181ff6b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Haraka Afya Tracking">
-                    </div>
-                    <div class="gallery-item">
-                        <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDZ8fGhlYWx0aHxlbnwwfHwwfHx8MA%3D%3D" alt="Haraka Afya Features">
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Shopfinity Details -->
-            <div id="shopfinity-details" class="project-details">
-                <div class="project-info">
-                    <h2>Shopfinity <span class="text-primary">(Available on Play Store)</span></h2>
-                    <p>An e-commerce platform specifically designed for bookshops to manage sales, inventory, and bulk orders efficiently. The system includes analytics dashboards for tracking sales performance and customer behavior.</p>
-                    
-                    <h3>Key Features:</h3>
-                    <ul>
-                        <li>Inventory management with barcode scanning</li>
-                        <li>Multi-user access with role-based permissions</li>
-                        <li>Bulk order processing system</li>
-                        <li>Sales analytics and reporting</li>
-                        <li>Customer management and loyalty programs</li>
-                        <li>Integration with payment gateways</li>
-                    </ul>
-                    
-                    <h3>Technologies Used:</h3>
-                    <p>Java, Firebase, Android SDK, Google Books API, ML Kit (for barcode scanning), Stripe API</p>
-                    
-                    <h3>Impact:</h3>
-                    <p>Shopfinity has been adopted by over 50 bookshops, helping them increase operational efficiency by 40% and improve sales tracking accuracy.</p>
-                    
-                    <div class="app-badges">
-                        <a href="https://play.google.com/store" target="_blank">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" height="50">
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="project-gallery">
-                    <div class="gallery-item">
-                        <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Shopfinity Inventory">
-                    </div>
-                    <div class="gallery-item">
-                        <img src="https://images.unsplash.com/photo-1507914372368-b2b085b925a1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Shopfinity Sales">
-                    </div>
-                    <div class="gallery-item">
-                        <img src="https://cdn.dribbble.com/userupload/26735249/file/original-06dc14a337d1d686c554368000fedfab.png?resize=1024x768&vertical=center" alt="Shopfinity UI">
                     </div>
                 </div>
             </div>
@@ -515,33 +626,86 @@
     <!-- Contact Section -->
     <section id="contact" class="contact section">
         <div class="container">
-            <h2 class="section-title">Get In <span class="highlight">Touch</span></h2>
-            <p class="section-subtitle">Have a project in mind or want to discuss potential opportunities? Feel free to reach out!</p>
-            
-            <div class="contact-form">
-                <form id="contactForm">
-                    <div class="form-group">
-                        <label for="name" class="form-label">Name</label>
-                        <input type="text" id="name" name="name" class="form-control" placeholder="Your name" required>
+            <div class="section-header">
+                <span class="section-tag">Get In Touch</span>
+                <h2 class="section-title">Let's Work <span class="gradient-text">Together</span></h2>
+                <p class="section-subtitle">Have a project in mind or want to discuss potential opportunities? Feel free
+                    to reach out!</p>
+            </div>
+
+            <div class="contact-wrapper">
+                <div class="contact-info glass-card">
+                    <h3>Contact Information</h3>
+                    <div class="contact-items">
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="contact-details">
+                                <h4>Location</h4>
+                                <p>Nairobi, Kenya</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="contact-details">
+                                <h4>Email</h4>
+                                <a href="mailto:ridgejunior204@gmail.com">ridgejunior204@gmail.com</a>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-phone-alt"></i>
+                            </div>
+                            <div class="contact-details">
+                                <h4>Phone</h4>
+                                <a href="tel:+254113245740">+254 113 245 740</a>
+                            </div>
+                        </div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" id="email" name="email" class="form-control" placeholder="Your email" required>
+                    <div class="contact-social">
+                        <a href="https://www.linkedin.com/in/ridge-junior-2bb333204/" target="_blank"
+                            class="social-link">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="https://github.com/JuniorCarti" target="_blank" class="social-link">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="https://wa.me/254113245740" target="_blank" class="social-link">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                        <a href="mailto:ridgejunior204@gmail.com" class="social-link">
+                            <i class="fas fa-envelope"></i>
+                        </a>
                     </div>
-                    
+                </div>
+
+                <form id="contactForm" class="contact-form glass-card">
                     <div class="form-group">
-                        <label for="subject" class="form-label">Subject</label>
-                        <input type="text" id="subject" name="subject" class="form-control" placeholder="Subject">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" placeholder="Your name" required>
                     </div>
-                    
+
                     <div class="form-group">
-                        <label for="message" class="form-label">Message</label>
-                        <textarea id="message" name="message" class="form-control" placeholder="Your message" rows="5" required></textarea>
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" placeholder="Your email" required>
                     </div>
-                    
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-paper-plane"></i> Send Message
+
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <input type="text" id="subject" name="subject" placeholder="Subject">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" placeholder="Your message" rows="5" required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-full">
+                        <span>Send Message</span>
+                        <i class="fas fa-paper-plane"></i>
                     </button>
                 </form>
             </div>
@@ -549,81 +713,47 @@
     </section>
 
     <!-- Footer -->
-    <footer class="site-footer">
+    <footer class="footer">
         <div class="container">
-            <div class="footer-container">
-                <!-- Company Info Column -->
-                <div class="footer-column">
-                    <h3 class="footer-logo">E-service Solutions</h3>
-                    <p class="footer-tagline">Building digital experiences that matter</p>
-                    
-                    <div class="newsletter">
-                        <h4>Stay Updated</h4>
-                        <div class="newsletter-input">
-                            <input type="email" placeholder="Your email address">
-                            <button class="subscribe-btn">Subscribe</button>
-                        </div>
-                    </div>
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3 class="footer-logo">Ridge<span>.</span></h3>
+                    <p>Building digital experiences that matter</p>
                 </div>
-
-                <!-- Quick Links Column -->
-                <div class="footer-column">
+                <div class="footer-links">
                     <h4>Quick Links</h4>
-                    <ul class="footer-links">
-                        <li><a href="#about">About Me</a></li>
-                        <li><a href="#Expertise">Skills</a></li>
+                    <ul>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#skills">Skills</a></li>
                         <li><a href="#education">Education</a></li>
                         <li><a href="#projects">Projects</a></li>
                         <li><a href="#contact">Contact</a></li>
                     </ul>
                 </div>
-
-                <!-- Contact Info Column -->
-                <div class="footer-column">
-                    <h4>Get In Touch</h4>
-                    <div class="contact-info">
-                        <div class="contact-item">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>Nairobi, Kenya</span>
-                        </div>
-                        <div class="contact-item">
-                            <i class="fas fa-envelope"></i>
-                            <span>ridgejunior204@gmail.com</span>
-                        </div>
-                        <div class="contact-item">
-                            <i class="fas fa-phone-alt"></i>
-                            <span>+254 113 245 740</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Social Media Column -->
-                <div class="footer-column">
-                    <h4>Connect With Me</h4>
-                    <div class="social-links">
-                        <a href="https://www.linkedin.com/in/ridge-junior-2bb333204/" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="https://github.com/JuniorCarti" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
-                        <a href="https://wa.me/254113245740" target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-                        <a href="https://twitter.com/yourprofile" target="_blank" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                    </div>
-                    <button class="hire-me-btn">Hire Me</button>
-                </div>
             </div>
-
-            <!-- Footer Bottom -->
             <div class="footer-bottom">
-                <div class="copyright">
-                    &copy; 2025 Ridge. All rights reserved.
-                </div>
-                <div class="legal-links">
-                    <a href="#">Privacy Policy</a>
-                    <a href="#">Terms of Service</a>
-                    <a href="#">Cookies</a>
+                <p>&copy; 2025 Ridge. All rights reserved.</p>
+                <div class="footer-social">
+                    <a href="https://www.linkedin.com/in/ridge-junior-2bb333204/" target="_blank" aria-label="LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="https://github.com/JuniorCarti" target="_blank" aria-label="GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="https://wa.me/254113245740" target="_blank" aria-label="WhatsApp">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
                 </div>
             </div>
         </div>
     </footer>
 
+    <!-- Scroll to Top Button -->
+    <button class="scroll-to-top" id="scrollToTop" aria-label="Scroll to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
     <script src="js/script.js"></script>
 </body>
+
 </html>
