@@ -2,8 +2,38 @@
    MODERN PORTFOLIO - JAVASCRIPT
    ============================================ */
 
+// Import Firebase modules
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+import { getFirestore, collection, addDoc, query, where, orderBy, limit, getDocs, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+
 (function () {
     'use strict';
+
+    // ============================================
+    // FIREBASE CONFIGURATION
+    // ============================================
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAQADtIhpsfGYq4loRt_O8V30rYMLbseP8",
+        authDomain: "portfolio-8b30f.firebaseapp.com",
+        projectId: "portfolio-8b30f",
+        storageBucket: "portfolio-8b30f.firebasestorage.app",
+        messagingSenderId: "198499933512",
+        appId: "1:198499933512:web:a19423ddef46699b99e77d"
+    };
+
+    let db = null;
+    let firebaseReady = false;
+
+    // Initialize Firebase immediately
+    try {
+        const app = initializeApp(firebaseConfig);
+        db = getFirestore(app);
+        firebaseReady = true;
+        console.log('✅ Firebase initialized successfully (Firestore only)');
+    } catch (error) {
+        console.error('❌ Firebase initialization error:', error);
+    }
 
     // ============================================
     // INITIALIZATION
@@ -26,13 +56,17 @@
             initNavigation();
             initMobileMenu();
             initHeroVideo();
-            initScrollAnimations();
             initTypingEffect();
             initCounterAnimation();
             initProgressBars();
             initContactForm();
+            initReviewsForm(); // This calls loadReviews()
             initScrollToTop();
             initSmoothScroll();
+            // Initialize scroll animations LAST, after reviews are loaded
+            setTimeout(() => {
+                initScrollAnimations();
+            }, 1500);
         }, 100);
     });
 
@@ -339,28 +373,124 @@
 
     function initContactForm() {
         const contactForm = document.getElementById('contactForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const submitText = document.getElementById('submitText');
+        const formStatus = document.getElementById('formStatus');
+        let isSubmitting = false;
+
+        // Formspree endpoint
+        const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xnjjjpjg';
 
         if (contactForm) {
-            contactForm.addEventListener('submit', function (e) {
+            contactForm.addEventListener('submit', async function (e) {
                 e.preventDefault();
 
-                // Get form values
-                const formData = {
-                    name: document.getElementById('name').value,
-                    email: document.getElementById('email').value,
-                    subject: document.getElementById('subject').value,
-                    message: document.getElementById('message').value
-                };
+                // Prevent duplicate submissions
+                if (isSubmitting) return;
 
-                // Show success message
-                showNotification('Thank you for your message! I will get back to you soon.', 'success');
+                // Clear previous messages
+                formStatus.innerHTML = '';
+                clearFieldErrors();
 
-                // Reset form
-                contactForm.reset();
+                // Validate form
+                if (!validateContactForm()) return;
 
-                // Here you would typically send the data to a server
-                // For now, we'll just log it
-                console.log('Form submitted:', formData);
+                isSubmitting = true;
+                submitBtn.disabled = true;
+                submitText.textContent = 'Sending...';
+
+                try {
+                    // Prepare form data
+                    const formDataToSend = new FormData(contactForm);
+
+                    // Send to Formspree
+                    const response = await fetch(FORMSPREE_ENDPOINT, {
+                        method: 'POST',
+                        body: formDataToSend,
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        // Success
+                        formStatus.innerHTML = '<div class="status-message success"><i class="fas fa-check-circle"></i> Message sent successfully! I\'ll get back to you soon.</div>';
+                        contactForm.reset();
+
+                        // Scroll to status message
+                        formStatus.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    } else {
+                        // Server error
+                        formStatus.innerHTML = '<div class="status-message error"><i class="fas fa-exclamation-circle"></i> There was an error sending your message. Please try again.</div>';
+                    }
+                } catch (error) {
+                    // Network error
+                    console.error('Form submission error:', error);
+                    formStatus.innerHTML = '<div class="status-message error"><i class="fas fa-exclamation-circle"></i> Network error. Please check your connection and try again.</div>';
+                } finally {
+                    // Reset button state
+                    isSubmitting = false;
+                    submitBtn.disabled = false;
+                    submitText.textContent = 'Send Message';
+                }
+            });
+        }
+
+        function validateContactForm() {
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const subject = document.getElementById('subject').value.trim();
+            const message = document.getElementById('message').value.trim();
+            let isValid = true;
+
+            // Name validation
+            if (!name) {
+                showFieldError('name', 'Name is required');
+                isValid = false;
+            }
+
+            // Email validation
+            if (!email) {
+                showFieldError('email', 'Email is required');
+                isValid = false;
+            } else if (!isValidEmail(email)) {
+                showFieldError('email', 'Please enter a valid email');
+                isValid = false;
+            }
+
+            // Subject validation
+            if (!subject) {
+                showFieldError('subject', 'Subject is required');
+                isValid = false;
+            }
+
+            // Message validation
+            if (!message) {
+                showFieldError('message', 'Message is required');
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function showFieldError(fieldId, errorMessage) {
+            const errorElement = document.getElementById(fieldId + 'Error');
+            if (errorElement) {
+                errorElement.textContent = errorMessage;
+                errorElement.style.display = 'block';
+            }
+        }
+
+        function clearFieldErrors() {
+            const errorElements = document.querySelectorAll('.error-message');
+            errorElements.forEach(element => {
+                element.textContent = '';
+                element.style.display = 'none';
             });
         }
     }
@@ -540,6 +670,468 @@
         }
     `;
     document.head.appendChild(style);
+
+    // ============================================
+    // FIREBASE REVIEWS INTEGRATION
+    // ============================================
+
+    // Initialize Review Form Submission
+    function initReviewsForm() {
+        const reviewForm = document.getElementById('reviewForm');
+
+        if (!reviewForm) {
+            console.warn('Review form not found');
+            return;
+        }
+
+        // Load reviews immediately
+        if (firebaseReady) {
+            loadReviews();
+        } else {
+            console.warn('⚠️ Firebase not ready. Retrying...');
+            setTimeout(() => {
+                if (firebaseReady) {
+                    loadReviews();
+                } else {
+                    showReviewsError('Firebase connection failed. Please refresh the page.');
+                }
+            }, 2000);
+        }
+
+        // Setup sort dropdown
+        const sortSelect = document.getElementById('sortSelect');
+        if (sortSelect) {
+            sortSelect.addEventListener('change', function () {
+                currentSort = this.value;
+                applyFilter(currentFilter);
+            });
+        }
+
+        reviewForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            if (!firebaseReady) {
+                showReviewStatus('Firebase not initialized. Please try again later.', 'error');
+                return;
+            }
+
+            // Get form values
+            const name = document.getElementById('reviewerName').value.trim();
+            const rating = parseInt(document.getElementById('reviewRating').value);
+            const message = document.getElementById('reviewMessage').value.trim();
+            const photoURL = document.getElementById('photoURL').value.trim();
+
+            // Validation
+            if (!name || !rating || !message) {
+                showReviewStatus('Please fill in all fields', 'error');
+                return;
+            }
+
+            if (name.length < 2) {
+                showReviewStatus('Name must be at least 2 characters', 'error');
+                return;
+            }
+
+            if (message.length < 10) {
+                showReviewStatus('Review must be at least 10 characters', 'error');
+                return;
+            }
+
+            // Disable submit button while processing
+            const submitBtn = document.getElementById('submitReviewBtn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span>Submitting...</span>';
+
+            try {
+                // Validate photoURL if provided
+                let validPhotoURL = null;
+                if (photoURL) {
+                    if (!isValidURL(photoURL)) {
+                        showReviewStatus('Invalid image URL. Must be HTTPS.', 'error');
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalText;
+                        return;
+                    }
+                    validPhotoURL = photoURL;
+                }
+
+                // Add review to Firestore
+                const docRef = await addDoc(collection(db, 'reviews'), {
+                    name: name,
+                    rating: rating,
+                    message: message,
+                    photoURL: validPhotoURL,
+                    createdAt: serverTimestamp(),
+                    approved: false // Requires manual approval for security
+                });
+
+                console.log('✅ Review submitted with ID:', docRef.id);
+
+                // Show success message
+                showReviewStatus('Thank you! Your review has been submitted and will be displayed after approval.', 'success');
+
+                // Reset form
+                reviewForm.reset();
+
+                // Reload reviews after a short delay
+                setTimeout(() => {
+                    loadReviews();
+                }, 500);
+
+            } catch (error) {
+                console.error('❌ Error submitting review:', error);
+                showReviewStatus('Error submitting review. Please try again.', 'error');
+            } finally {
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
+        });
+
+        // Setup filter buttons
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const filter = this.getAttribute('data-filter');
+                applyFilter(filter);
+            });
+
+            // Add keyboard support
+            btn.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    btn.click();
+                }
+            });
+
+            // Add accessibility attributes
+            btn.setAttribute('role', 'button');
+            btn.setAttribute('tabindex', '0');
+        });
+
+        // Setup load more button
+        const loadMoreBtn = document.getElementById('loadMoreBtn');
+        if (loadMoreBtn) {
+            loadMoreBtn.addEventListener('click', function () {
+                currentPage++;
+                renderReviewsPage();
+                // Scroll to reviews
+                document.getElementById('reviewsList').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        }
+    }
+
+    // ============================================
+    // REVIEWS MANAGEMENT - ENHANCED FOR SCALE
+    // ============================================
+
+    let allReviews = [];
+    let displayedReviews = [];
+    let currentFilter = 'all';
+    let currentSort = 'recent';
+    let reviewsPerPage = 6;
+    let currentPage = 0;
+
+    // Load Reviews from Firestore
+    async function loadReviews() {
+        if (!firebaseReady || !db) {
+            console.warn('Firebase not ready for loading reviews');
+            return;
+        }
+
+        const reviewsList = document.getElementById('reviewsList');
+        if (!reviewsList) return;
+
+        reviewsList.innerHTML = '<div class="loading-message">Loading reviews...</div>';
+
+        try {
+            // Simplified query - only WHERE, no ORDER BY (no composite index needed!)
+            const q = query(
+                collection(db, 'reviews'),
+                where('approved', '==', true)
+            );
+
+            const querySnapshot = await getDocs(q);
+
+            // Convert to array and sort by date in JavaScript
+            allReviews = [];
+            querySnapshot.forEach(doc => {
+                allReviews.push(doc.data());
+            });
+
+            // Sort by createdAt descending (newest first) by default
+            allReviews.sort((a, b) => {
+                const timeA = a.createdAt ? (a.createdAt.toDate ? a.createdAt.toDate() : new Date(a.createdAt)) : new Date(0);
+                const timeB = b.createdAt ? (b.createdAt.toDate ? b.createdAt.toDate() : new Date(b.createdAt)) : new Date(0);
+                return timeB - timeA;
+            });
+
+            console.log(`✅ Loaded ${allReviews.length} reviews (no index needed!)`);
+
+            // Update stats
+            updateReviewsStats();
+
+            // Reset pagination and apply filter
+            currentPage = 0;
+            applyFilter('all');
+
+        } catch (error) {
+            console.error('❌ Error loading reviews:', error);
+            console.error('Error details:', error.message);
+
+            if (error.message && error.message.includes('index')) {
+                showReviewsError('📚 Index is being created... Please wait 5-10 minutes and refresh.');
+
+                // Auto-retry after 10 seconds
+                setTimeout(() => {
+                    console.log('🔄 Retrying to load reviews...');
+                    loadReviews();
+                }, 10000);
+            } else if (error.message && error.message.includes('Missing or insufficient permissions')) {
+                showReviewsError('⚠️ Firestore security rules not set. Please set up security rules in Firebase Console (see FIREBASE_SETUP_GUIDE.md)');
+            } else {
+                showReviewsError(`Unable to load reviews: ${error.message}`);
+
+                // Auto-retry after 5 seconds for temporary issues
+                setTimeout(() => {
+                    console.log('🔄 Retrying to load reviews...');
+                    loadReviews();
+                }, 5000);
+            }
+        }
+    }
+
+    // Update reviews statistics
+    function updateReviewsStats() {
+        if (allReviews.length === 0) {
+            document.getElementById('avgRating').textContent = '0';
+            document.getElementById('totalReviews').textContent = '0';
+            document.getElementById('avgRatingStars').textContent = '';
+            return;
+        }
+
+        // Calculate average rating
+        const totalRating = allReviews.reduce((sum, r) => sum + (r.rating || 0), 0);
+        const avgRating = (totalRating / allReviews.length).toFixed(1);
+
+        // Update total count
+        document.getElementById('totalReviews').textContent = allReviews.length;
+        document.getElementById('avgRating').textContent = avgRating;
+
+        // Update star display
+        const fullStars = Math.floor(avgRating);
+        const hasHalf = avgRating % 1 >= 0.5;
+        let starDisplay = '⭐'.repeat(fullStars);
+        if (hasHalf && fullStars < 5) starDisplay += '✨';
+        document.getElementById('avgRatingStars').textContent = starDisplay;
+    }
+
+    // Apply filter and sort to reviews
+    function applyFilter(filter) {
+        currentFilter = filter;
+        currentPage = 0;
+
+        // Update active filter button
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.remove('active');
+            btn.setAttribute('aria-pressed', 'false');
+        });
+        const activeBtn = document.querySelector(`.filter-btn[data-filter="${filter}"]`);
+        if (activeBtn) {
+            activeBtn.classList.add('active');
+            activeBtn.setAttribute('aria-pressed', 'true');
+        }
+
+        // Filter reviews
+        if (filter === 'all') {
+            displayedReviews = [...allReviews];
+        } else if (filter === 'below3') {
+            displayedReviews = allReviews.filter(r => r.rating < 3);
+        } else {
+            displayedReviews = allReviews.filter(r => r.rating === parseInt(filter));
+        }
+
+        // Apply sort
+        if (currentSort === 'highest') {
+            displayedReviews.sort((a, b) => b.rating - a.rating);
+        } else {
+            // Default: recent (newest first) - already sorted by loadReviews
+            displayedReviews.sort((a, b) => {
+                const timeA = a.createdAt ? (a.createdAt.toDate ? a.createdAt.toDate() : new Date(a.createdAt)) : new Date(0);
+                const timeB = b.createdAt ? (b.createdAt.toDate ? b.createdAt.toDate() : new Date(b.createdAt)) : new Date(0);
+                return timeB - timeA;
+            });
+        }
+
+        // Render first page
+        renderReviewsPage();
+    }
+
+    // Render current page of reviews
+    function renderReviewsPage() {
+        const reviewsList = document.getElementById('reviewsList');
+        const loadMoreContainer = document.getElementById('loadMoreContainer');
+
+        if (displayedReviews.length === 0) {
+            reviewsList.innerHTML = '<div class="no-reviews-message">No reviews match your filter</div>';
+            loadMoreContainer.style.display = 'none';
+            return;
+        }
+
+        const startIdx = currentPage * reviewsPerPage;
+        const endIdx = startIdx + reviewsPerPage;
+        const reviewsToShow = displayedReviews.slice(0, endIdx);
+
+        // Clear and render reviews
+        reviewsList.innerHTML = '';
+        reviewsToShow.forEach(review => {
+            const card = createReviewCard(review);
+            reviewsList.appendChild(card);
+        });
+
+        // Show/hide load more button
+        if (endIdx < displayedReviews.length) {
+            loadMoreContainer.style.display = 'flex';
+        } else {
+            loadMoreContainer.style.display = 'none';
+        }
+
+        // Reinitialize scroll animations
+        if (window.IntersectionObserver) {
+            setTimeout(() => {
+                const newCards = reviewsList.querySelectorAll('.scroll-fade-in:not(.scroll-animate)');
+                if (newCards.length > 0) {
+                    const observerOptions = {
+                        threshold: 0.1,
+                        rootMargin: '0px 0px -50px 0px'
+                    };
+                    const observer = new IntersectionObserver((entries) => {
+                        entries.forEach((entry) => {
+                            if (entry.isIntersecting) {
+                                entry.target.classList.add('scroll-animate');
+                            }
+                        });
+                    }, observerOptions);
+                    newCards.forEach(card => observer.observe(card));
+                }
+            }, 100);
+        }
+
+        console.log(`📊 Showing ${reviewsToShow.length} of ${displayedReviews.length} reviews (${currentFilter} filter, ${currentSort} sort)`);
+    }
+
+    // Create Review Card Element with Avatar Support
+    function createReviewCard(review) {
+        const card = document.createElement('div');
+        card.className = 'review-card scroll-fade-in';
+
+        // Format date
+        let dateStr = 'Recently';
+        if (review.createdAt) {
+            const date = review.createdAt.toDate ? review.createdAt.toDate() : new Date(review.createdAt);
+            dateStr = formatDate(date);
+        }
+
+        // Create star rating
+        const stars = '⭐'.repeat(review.rating);
+
+        // Create avatar
+        let avatarHTML = '';
+        if (review.photoURL) {
+            avatarHTML = `
+                <div class="review-avatar">
+                    <img src="${review.photoURL}" alt="Avatar for ${escapeHtml(review.name)}" loading="lazy">
+                </div>
+            `;
+        } else {
+            // Fallback: Show initial letter
+            const initial = review.name.charAt(0).toUpperCase();
+            avatarHTML = `
+                <div class="review-avatar fallback" title="${escapeHtml(review.name)}">
+                    ${initial}
+                </div>
+            `;
+        }
+
+        card.innerHTML = `
+            <div class="review-avatar-section">
+                ${avatarHTML}
+            </div>
+            <div class="review-content">
+                <div class="review-header">
+                    <div class="review-author-info">
+                        <div class="review-author">${escapeHtml(review.name)}</div>
+                        <div class="review-date">${dateStr}</div>
+                    </div>
+                    <div class="review-rating">${stars}</div>
+                </div>
+                <p class="review-text">${escapeHtml(review.message)}</p>
+            </div>
+        `;
+
+        return card;
+    }
+
+    // Format date for display
+    function formatDate(date) {
+        const now = new Date();
+        const diffMs = now - date;
+        const diffMins = Math.floor(diffMs / 60000);
+        const diffHours = Math.floor(diffMs / 3600000);
+        const diffDays = Math.floor(diffMs / 86400000);
+
+        if (diffMins < 1) return 'just now';
+        if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
+        if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+        if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+
+        // Format as date
+        return date.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
+        });
+    }
+
+    // Show Review Form Status Message
+    function showReviewStatus(message, type) {
+        const statusEl = document.getElementById('reviewFormStatus');
+        if (!statusEl) return;
+
+        statusEl.textContent = message;
+        statusEl.className = `form-status ${type}`;
+
+        if (type === 'success') {
+            setTimeout(() => {
+                statusEl.className = 'form-status';
+            }, 4000);
+        }
+    }
+
+    // Show Reviews Error Message
+    function showReviewsError(message) {
+        const reviewsList = document.getElementById('reviewsList');
+        if (reviewsList) {
+            reviewsList.innerHTML = `<div class="no-reviews-message">${message}</div>`;
+        }
+    }
+
+    // Escape HTML to prevent XSS
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Validate URL format
+    function isValidURL(urlString) {
+        try {
+            const url = new URL(urlString);
+            return url.protocol === 'http:' || url.protocol === 'https:';
+        } catch (error) {
+            return false;
+        }
+    }
 
 })();
 
