@@ -1932,7 +1932,6 @@ body {
     outline-offset: 2px;
 }
 
-/* CTA Button */
 .footer-cta-button {
     display: inline-flex;
     align-items: center;
@@ -1962,6 +1961,47 @@ body {
 
 .footer-cta-button:hover i {
     transform: translateX(3px);
+}
+
+/* CTA Group - Flex container for multiple buttons */
+.footer-cta-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+/* CV Download Button */
+.footer-cv-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    padding: 0.75rem 1.5rem;
+    background: var(--bg-glass);
+    border: 1.5px solid var(--primary);
+    color: var(--primary);
+    text-decoration: none;
+    border-radius: var(--radius-lg);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    transition: all var(--transition-normal);
+    cursor: pointer;
+}
+
+.footer-cv-button:hover {
+    background: var(--primary);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(99, 102, 241, 0.3);
+}
+
+.footer-cv-button i {
+    font-size: 0.75rem;
+    transition: transform var(--transition-normal);
+}
+
+.footer-cv-button:hover i {
+    transform: translateY(-2px);
 }
 
 /* Footer Divider */
@@ -2435,6 +2475,15 @@ body {
     .footer-cta-button {
         width: 100%;
         padding: 0.75rem;
+    }
+
+    .footer-cv-button {
+        width: 100%;
+        padding: 0.75rem;
+    }
+
+    .footer-cta-group {
+        width: 100%;
     }
 
     .footer-bottom {
