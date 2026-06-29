@@ -2,10 +2,6 @@
    MODERN PORTFOLIO - JAVASCRIPT
    ============================================ */
 
-// Import Firebase modules
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
-import { getFirestore, collection, addDoc, query, where, orderBy, limit, getDocs, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
-
 (function () {
     'use strict';
 
@@ -24,16 +20,7 @@ import { getFirestore, collection, addDoc, query, where, orderBy, limit, getDocs
 
     let db = null;
     let firebaseReady = false;
-
-    // Initialize Firebase immediately
-    try {
-        const app = initializeApp(firebaseConfig);
-        db = getFirestore(app);
-        firebaseReady = true;
-        console.log('✅ Firebase initialized successfully (Firestore only)');
-    } catch (error) {
-        console.error('❌ Firebase initialization error:', error);
-    }
+    let firebaseObserver = null; // IntersectionObserver watching #reviews
 
     // ============================================
     // INITIALIZATION
@@ -57,16 +44,12 @@ import { getFirestore, collection, addDoc, query, where, orderBy, limit, getDocs
             initMobileMenu();
             initHeroVideo();
             initTypingEffect();
-            initCounterAnimation();
-            initProgressBars();
             initContactForm();
-            initReviewsForm(); // This calls loadReviews()
+            initFirebaseLazy();
             initScrollToTop();
             initSmoothScroll();
-            // Initialize scroll animations LAST, after reviews are loaded
-            setTimeout(() => {
-                initScrollAnimations();
-            }, 1500);
+            initFooterYear();
+            initScrollAnimations();
         }, 100);
     });
 
@@ -74,6 +57,14 @@ import { getFirestore, collection, addDoc, query, where, orderBy, limit, getDocs
     // THEME TOGGLE
     // ============================================
 
+    /**
+     * initTheme()
+     * Reads the saved theme from localStorage (default: "dark"), applies
+     * the data-theme attribute to <html>, and calls updateThemeToggle()
+     * so the button's icon and aria-label are correct on first paint.
+     * Registers a click handler that toggles theme synchronously.
+     * DOM: #themeToggle. State: localStorage.theme.
+     */
     function initTheme() {
         const themeToggle = document.getElementById('themeToggle');
         const html = document.documentElement;
@@ -81,7 +72,7 @@ import { getFirestore, collection, addDoc, query, where, orderBy, limit, getDocs
         // Check for saved theme preference or default to dark
         const savedTheme = localStorage.getItem('theme') || 'dark';
         html.setAttribute('data-theme', savedTheme);
-        updateThemeIcon(savedTheme);
+        updateThemeToggle(savedTheme);
 
         if (themeToggle) {
             themeToggle.addEventListener('click', function () {
@@ -90,76 +81,71 @@ import { getFirestore, collection, addDoc, query, where, orderBy, limit, getDocs
 
                 html.setAttribute('data-theme', newTheme);
                 localStorage.setItem('theme', newTheme);
-                updateThemeIcon(newTheme);
+                updateThemeToggle(newTheme);
             });
         }
     }
 
-    function updateThemeIcon(theme) {
-        const themeToggle = document.getElementById('themeToggle');
-        if (themeToggle) {
-            const icon = themeToggle.querySelector('.material-symbols-outlined');
-            if (icon) {
-                icon.textContent = theme === 'dark' ? 'light_mode' : 'dark_mode';
-            }
+    /**
+     * updateThemeToggle(theme)
+     * Sets the theme toggle button's SVG icon and aria-label to reflect
+     * the current theme state. Called synchronously — no setTimeout or
+     * microtask delay — so screen readers pick up the label immediately.
+     * @param {string} theme - "dark" or "light"
+     */
+    function updateThemeToggle(theme) {
+        const btn = document.getElementById('themeToggle');
+        if (!btn) return;
+        const svg = btn.querySelector('use');
+        if (svg) {
+            svg.setAttribute('href', theme === 'dark' ? '#icon-sun' : '#icon-moon');
         }
+        btn.setAttribute('aria-label',
+            theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'
+        );
     }
 
     // ============================================
     // HERO VIDEO BACKGROUND
     // ============================================
 
+    /**
+     * initHeroVideo()
+     * Gates video autoplay based on viewport width and reduced-motion preference.
+     * - On mobile (≤768px): video.play() is NEVER called; CSS hides video and shows poster.
+     * - On desktop (>768px) with reduced motion: video.play() is NEVER called.
+     * - On desktop (>768px) without reduced motion: plays both .hero-video and .about-video-player.
+     * - .catch() is attached to suppress autoplay-blocked errors silently.
+     * Called from the DOMContentLoaded handler.
+     * @satisfies Requirements 1.1, 1.2, 1.3, 1.4
+     */
     function initHeroVideo() {
-        const heroVideo = document.querySelector('.hero-video');
-        const heroOverlay = document.querySelector('.hero-overlay');
-
-        if (!heroVideo) return;
-
-        // Check if user prefers reduced motion
+        // Check viewport and motion preference
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-        if (prefersReducedMotion) {
-            // Don't autoplay video if user prefers reduced motion
-            heroVideo.autoplay = false;
-            heroVideo.pause();
-            console.log('✨ Respecting prefers-reduced-motion: showing poster image');
-            return;
+        if (window.innerWidth > 768 && !prefersReducedMotion) {
+            // Desktop + no reduced motion: play both videos
+            const heroVideo = document.querySelector('.hero-video');
+            const aboutVideo = document.querySelector('.about-video-player');
+
+            if (heroVideo) heroVideo.play().catch(() => {});
+            if (aboutVideo) aboutVideo.play().catch(() => {});
         }
-
-        // Attempt to play video
-        const playPromise = heroVideo.play();
-
-        if (playPromise !== undefined) {
-            playPromise
-                .then(() => {
-                    console.log('✅ Hero video autoplaying successfully');
-                })
-                .catch((error) => {
-                    console.warn('⚠️ Autoplay blocked by browser:', error.message);
-                    // Browser blocked autoplay - poster image is already showing
-                    // Add play controls by removing playsinline if needed
-                    if (!heroVideo.hasAttribute('controls')) {
-                        heroVideo.setAttribute('controls', 'controls');
-                    }
-                });
-        }
-
-        // Handle video load errors
-        heroVideo.addEventListener('error', (e) => {
-            console.error('❌ Video failed to load:', e.target.error);
-            // Poster image will still show as fallback
-        });
-
-        // Ensure overlay is on top for better text readability
-        if (heroOverlay) {
-            heroOverlay.style.zIndex = '2';
-        }
+        // On mobile (≤768px): do NOT call play() — CSS hides video, shows poster
+        // On reduced motion: do NOT call play()
     }
 
     // ============================================
     // NAVIGATION
     // ============================================
 
+    /**
+     * initNavigation()
+     * Adds scroll-based styling to the navbar (adds .scrolled class when
+     * scrolled past 50px) and highlights the active nav link based on
+     * which section is currently in view.
+     * DOM: #navbar, .nav-link, section[id]. State: none.
+     */
     function initNavigation() {
         const navbar = document.getElementById('navbar');
         const navLinks = document.querySelectorAll('.nav-link');
@@ -209,51 +195,154 @@ import { getFirestore, collection, addDoc, query, where, orderBy, limit, getDocs
     // MOBILE MENU
     // ============================================
 
+    /**
+     * Traps keyboard focus within a container element.
+     * Handles Tab and Shift+Tab wrapping so focus cycles only through
+     * focusable elements inside the container.
+     * @param {HTMLElement} container - The DOM element to trap focus within.
+     * @returns {Function} The keydown handler, so it can be removed on close.
+     */
+    function trapFocus(container) {
+        const focusable = container.querySelectorAll(
+            'a[href], button:not([disabled]), input:not([disabled]), ' +
+            'select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        function handler(e) {
+            if (e.key !== 'Tab') return;
+            if (e.shiftKey) {
+                if (document.activeElement === first) {
+                    e.preventDefault();
+                    last.focus();
+                }
+            } else {
+                if (document.activeElement === last) {
+                    e.preventDefault();
+                    first.focus();
+                }
+            }
+        }
+        container.addEventListener('keydown', handler);
+        return handler;
+    }
+
+    /**
+     * Initialises the mobile menu toggle behaviour including:
+     * - Open/close on toggle button click
+     * - Focus trap while menu is open (Tab/Shift+Tab wrapping)
+     * - Escape key closes menu and returns focus to toggle
+     * - aria-expanded state management
+     * - Focus moves to first menu item on open
+     * - Focus returns to toggle button on close
+     */
     function initMobileMenu() {
         const mobileMenuToggle = document.getElementById('mobileMenuToggle');
         const mobileMenu = document.getElementById('mobileMenu');
         const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
 
-        if (mobileMenuToggle && mobileMenu) {
-            mobileMenuToggle.addEventListener('click', function () {
-                mobileMenu.classList.toggle('active');
-                const icon = mobileMenuToggle.querySelector('.material-symbols-outlined');
-                if (icon) {
-                    icon.textContent = mobileMenu.classList.contains('active') ? 'close' : 'menu';
-                }
-                document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
-            });
+        if (!mobileMenuToggle || !mobileMenu) return;
 
-            // Close menu when clicking on a link
-            mobileNavLinks.forEach(link => {
-                link.addEventListener('click', function () {
-                    mobileMenu.classList.remove('active');
-                    const icon = mobileMenuToggle.querySelector('.material-symbols-outlined');
-                    if (icon) {
-                        icon.textContent = 'menu';
-                    }
-                    document.body.style.overflow = '';
-                });
-            });
+        let menuOpen = false;
+        let trap = null;
 
-            // Close menu when clicking outside
-            document.addEventListener('click', function (e) {
-                if (!mobileMenu.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
-                    mobileMenu.classList.remove('active');
-                    const icon = mobileMenuToggle.querySelector('.material-symbols-outlined');
-                    if (icon) {
-                        icon.textContent = 'menu';
-                    }
-                    document.body.style.overflow = '';
-                }
-            });
+        function openMenu() {
+            mobileMenu.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            mobileMenuToggle.setAttribute('aria-expanded', 'true');
+
+            // Update icon to close
+            const useEl = mobileMenuToggle.querySelector('use');
+            if (useEl) {
+                useEl.setAttribute('href', '#icon-close');
+            }
+
+            // Trap focus inside the mobile menu
+            trap = trapFocus(mobileMenu);
+
+            // Move focus to the first focusable element inside the menu
+            const focusable = mobileMenu.querySelectorAll(
+                'a[href], button:not([disabled]), input:not([disabled]), ' +
+                'select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+            );
+            if (focusable.length > 0) {
+                focusable[0].focus();
+            }
+
+            // Listen for Escape key to close menu
+            document.addEventListener('keydown', escapeHandler);
+            menuOpen = true;
         }
+
+        function closeMenu() {
+            mobileMenu.classList.remove('active');
+            document.body.style.overflow = '';
+            mobileMenuToggle.setAttribute('aria-expanded', 'false');
+
+            // Update icon to menu
+            const useEl = mobileMenuToggle.querySelector('use');
+            if (useEl) {
+                useEl.setAttribute('href', '#icon-menu');
+            }
+
+            // Remove focus trap keydown listener
+            if (trap) {
+                mobileMenu.removeEventListener('keydown', trap);
+                trap = null;
+            }
+
+            // Remove Escape key listener
+            document.removeEventListener('keydown', escapeHandler);
+
+            // Return focus to toggle button
+            mobileMenuToggle.focus();
+            menuOpen = false;
+        }
+
+        function escapeHandler(e) {
+            if (e.key === 'Escape') {
+                closeMenu();
+            }
+        }
+
+        // Toggle menu on button click
+        mobileMenuToggle.addEventListener('click', function () {
+            if (menuOpen) {
+                closeMenu();
+            } else {
+                openMenu();
+            }
+        });
+
+        // Close menu when clicking on a nav link
+        mobileNavLinks.forEach(link => {
+            link.addEventListener('click', function () {
+                if (menuOpen) {
+                    closeMenu();
+                }
+            });
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function (e) {
+            if (menuOpen && !mobileMenu.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+                closeMenu();
+            }
+        });
     }
 
     // ============================================
     // TYPING EFFECT
     // ============================================
 
+    /**
+     * initTypingEffect()
+     * Cycles through an array of role titles with a typewriter animation
+     * on the .typing-text element. Each title is typed character-by-character,
+     * then erased before the next one begins.
+     * DOM: .typing-text. State: textIndex, charIndex, isDeleting.
+     */
     function initTypingEffect() {
         const typingElement = document.querySelector('.typing-text');
         if (!typingElement) return;
@@ -304,73 +393,20 @@ import { getFirestore, collection, addDoc, query, where, orderBy, limit, getDocs
     // It uses Intersection Observer API with CSS-based animations
     // for luxury, Mercedes-Benz style scroll reveals
 
-    // ============================================
-    // COUNTER ANIMATION
-    // ============================================
 
-    function initCounterAnimation() {
-        const counters = document.querySelectorAll('.stat-number');
-
-        const animateCounter = (counter) => {
-            const target = parseInt(counter.getAttribute('data-target'));
-            const duration = 2000;
-            const increment = target / (duration / 16);
-            let current = 0;
-
-            const updateCounter = () => {
-                current += increment;
-                if (current < target) {
-                    counter.textContent = Math.floor(current);
-                    requestAnimationFrame(updateCounter);
-                } else {
-                    counter.textContent = target + '+';
-                }
-            };
-
-            updateCounter();
-        };
-
-        const counterObserver = new IntersectionObserver(function (entries) {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    animateCounter(entry.target);
-                    counterObserver.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.5 });
-
-        counters.forEach(counter => {
-            counterObserver.observe(counter);
-        });
-    }
-
-    // ============================================
-    // PROGRESS BARS
-    // ============================================
-
-    function initProgressBars() {
-        const progressBars = document.querySelectorAll('.progress-fill');
-
-        const progressObserver = new IntersectionObserver(function (entries) {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const progress = entry.target.style.getPropertyValue('--progress');
-                    entry.target.style.width = progress;
-                    progressObserver.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.5 });
-
-        progressBars.forEach(bar => {
-            bar.style.width = '0%';
-            progressObserver.observe(bar);
-        });
-    }
 
     // ============================================
     // CONTACT FORM
     // ============================================
 
+    /**
+     * initContactForm()
+     * Handles Formspree form submission with per-field validation and live
+     * region status updates. Uses textContent (not innerHTML) to inject
+     * success/error messages into #formStatus for screen reader announcements.
+     * DOM: #contactForm, #formStatus, #name, #email, #subject, #message, error spans.
+     * State: isSubmitting.
+     */
     function initContactForm() {
         const contactForm = document.getElementById('contactForm');
         const submitBtn = document.getElementById('submitBtn');
@@ -389,7 +425,7 @@ import { getFirestore, collection, addDoc, query, where, orderBy, limit, getDocs
                 if (isSubmitting) return;
 
                 // Clear previous messages
-                formStatus.innerHTML = '';
+                formStatus.textContent = '';
                 clearFieldErrors();
 
                 // Validate form
@@ -413,20 +449,20 @@ import { getFirestore, collection, addDoc, query, where, orderBy, limit, getDocs
                     });
 
                     if (response.ok) {
-                        // Success
-                        formStatus.innerHTML = '<div class="status-message success"><i class="fas fa-check-circle"></i> Message sent successfully! I\'ll get back to you soon.</div>';
+                        // Success — textContent only, never innerHTML (XSS prevention, a11y)
+                        formStatus.textContent = 'Message sent successfully!';
                         contactForm.reset();
 
                         // Scroll to status message
                         formStatus.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     } else {
                         // Server error
-                        formStatus.innerHTML = '<div class="status-message error"><i class="fas fa-exclamation-circle"></i> There was an error sending your message. Please try again.</div>';
+                        formStatus.textContent = 'Failed to send message. Please try again.';
                     }
                 } catch (error) {
                     // Network error
                     console.error('Form submission error:', error);
-                    formStatus.innerHTML = '<div class="status-message error"><i class="fas fa-exclamation-circle"></i> Network error. Please check your connection and try again.</div>';
+                    formStatus.textContent = 'Network error. Please check your connection.';
                 } finally {
                     // Reset button state
                     isSubmitting = false;
@@ -482,15 +518,13 @@ import { getFirestore, collection, addDoc, query, where, orderBy, limit, getDocs
             const errorElement = document.getElementById(fieldId + 'Error');
             if (errorElement) {
                 errorElement.textContent = errorMessage;
-                errorElement.style.display = 'block';
             }
         }
 
         function clearFieldErrors() {
-            const errorElements = document.querySelectorAll('.error-message');
+            const errorElements = document.querySelectorAll('#contactForm .error-message');
             errorElements.forEach(element => {
                 element.textContent = '';
-                element.style.display = 'none';
             });
         }
     }
@@ -528,6 +562,13 @@ import { getFirestore, collection, addDoc, query, where, orderBy, limit, getDocs
     // SMOOTH SCROLL
     // ============================================
 
+    /**
+     * initSmoothScroll()
+     * Attaches click handlers to all in-page anchor links (href^="#") so
+     * that clicking them smoothly scrolls to the target section with an
+     * 80px offset for the fixed navbar.
+     * DOM: a[href^="#"]. State: none.
+     */
     function initSmoothScroll() {
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -553,11 +594,13 @@ import { getFirestore, collection, addDoc, query, where, orderBy, limit, getDocs
     // ============================================
 
     /**
-     * Initialize scroll-triggered animations using Intersection Observer API
-     * Animations are triggered when elements come into view, not on page load
-     * 
-     * Usage: Add classes like 'scroll-fade-in', 'scroll-slide-up', 'scroll-blur-in' to elements
-     * Optional: Use 'scroll-stagger-1', 'scroll-stagger-2', etc. for staggered reveals
+     * initScrollAnimations()
+     * Creates an IntersectionObserver for scroll-triggered animation classes
+     * (.scroll-fade-in, .scroll-slide-up, .scroll-blur-in, .scroll-scale-in,
+     * .scroll-stagger-1…4). Adds the .scroll-animate class on intersection to
+     * trigger the CSS keyframe. Respects prefers-reduced-motion by applying
+     * the class immediately without animation.
+     * DOM: .scroll-fade-in, .scroll-slide-up, etc. State: none.
      */
     function initScrollAnimations() {
         // Check if Intersection Observer is supported
@@ -620,6 +663,13 @@ import { getFirestore, collection, addDoc, query, where, orderBy, limit, getDocs
     // SCROLL TO TOP
     // ============================================
 
+    /**
+     * initScrollToTop()
+     * Shows or hides the #scrollToTop button based on scroll position
+     * (visible when scrolled past 300px). Clicking the button smoothly
+     * scrolls the page back to the top.
+     * DOM: #scrollToTop. State: none.
+     */
     function initScrollToTop() {
         const scrollToTopBtn = document.getElementById('scrollToTop');
 
@@ -639,6 +689,20 @@ import { getFirestore, collection, addDoc, query, where, orderBy, limit, getDocs
                 });
             });
         }
+    }
+
+    // ============================================
+    // FOOTER YEAR
+    // ============================================
+
+    /**
+     * initFooterYear()
+     * Sets the footer year span to the current year.
+     * DOM: #footerYear. State: none.
+     */
+    function initFooterYear() {
+        const el = document.getElementById('footerYear');
+        if (el) el.textContent = new Date().getFullYear();
     }
 
     // ============================================
@@ -672,10 +736,92 @@ import { getFirestore, collection, addDoc, query, where, orderBy, limit, getDocs
     document.head.appendChild(style);
 
     // ============================================
+    // FIREBASE LAZY LOADING
+    // ============================================
+
+    /**
+     * initFirebaseLazy()
+     * Creates an IntersectionObserver (rootMargin: "200px 0px", threshold: 0)
+     * targeting the #reviews section. When the section enters the viewport,
+     * the observer disconnects and loadFirebaseAndReviews() is called.
+     * Fallback: if IntersectionObserver is not supported, loads Firebase
+     * immediately on DOMContentLoaded.
+     * DOM: #reviews. State: firebaseObserver.
+     * @satisfies Requirements 5.1, 5.2, 5.5
+     */
+    function initFirebaseLazy() {
+        const reviewsSection = document.getElementById('reviews');
+        if (!reviewsSection) return;
+
+        // Fallback: no IntersectionObserver support
+        if (!('IntersectionObserver' in window)) {
+            loadFirebaseAndReviews();
+            return;
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    observer.disconnect();
+                    loadFirebaseAndReviews();
+                }
+            });
+        }, { rootMargin: '200px 0px', threshold: 0 });
+
+        observer.observe(reviewsSection);
+        firebaseObserver = observer;
+    }
+
+    /**
+     * loadFirebaseAndReviews()
+     * Dynamically imports Firebase SDK modules via ESM import(), initialises
+     * Firestore, and calls initReviewsForm() + loadReviews() on success.
+     * Shows a loading indicator while importing and displays an inline error
+     * message on failure without throwing an unhandled exception.
+     * @satisfies Requirements 5.2, 5.3
+     */
+    async function loadFirebaseAndReviews() {
+        const loadingEl = document.getElementById('reviewsList');
+        if (loadingEl) loadingEl.innerHTML = '<div class="loading-message">Loading reviews…</div>';
+
+        try {
+            const { initializeApp } = await import(
+                'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js'
+            );
+            const { getFirestore, collection, addDoc, query, where, getDocs, serverTimestamp } =
+                await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
+
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            firebaseReady = true;
+
+            // Store references for use in reviews form
+            window._firebaseModules = { collection, addDoc, query, where, getDocs, serverTimestamp };
+
+            initReviewsForm();
+            loadReviews();
+        } catch (err) {
+            console.error('Firebase lazy load failed:', err);
+            const el = document.getElementById('reviewsList');
+            if (el) el.textContent = 'Reviews could not be loaded. Please refresh the page.';
+        }
+    }
+
+    // ============================================
     // FIREBASE REVIEWS INTEGRATION
     // ============================================
 
     // Initialize Review Form Submission
+    /**
+     * initReviewsForm()
+     * Wires the #reviewForm submit handler including honeypot spam check,
+     * 60-second rate-limit countdown, and client-side validation (name 2–80 chars,
+     * message 10–1000 chars, rating 1–5). Also sets up filter buttons, sort dropdown,
+     * and load-more pagination for displaying reviews.
+     * DOM: #reviewForm, #reviewerName, #reviewRating, #reviewMessage, #photoURL,
+     *      #reviewFormStatus, #submitReviewBtn, .filter-btn, #sortSelect.
+     * State: rateLimitTimeout, rateLimitInterval.
+     */
     function initReviewsForm() {
         const reviewForm = document.getElementById('reviewForm');
 
@@ -684,19 +830,8 @@ import { getFirestore, collection, addDoc, query, where, orderBy, limit, getDocs
             return;
         }
 
-        // Load reviews immediately
-        if (firebaseReady) {
-            loadReviews();
-        } else {
-            console.warn('⚠️ Firebase not ready. Retrying...');
-            setTimeout(() => {
-                if (firebaseReady) {
-                    loadReviews();
-                } else {
-                    showReviewsError('Firebase connection failed. Please refresh the page.');
-                }
-            }, 2000);
-        }
+        // Load reviews immediately (Firebase is already initialized at this point)
+        loadReviews();
 
         // Setup sort dropdown
         const sortSelect = document.getElementById('sortSelect');
@@ -707,8 +842,31 @@ import { getFirestore, collection, addDoc, query, where, orderBy, limit, getDocs
             });
         }
 
+        // Photo URL blur validation
+        const photoURLInput = document.getElementById('photoURL');
+        const photoError = document.getElementById('photoError');
+
+        if (photoURLInput && photoError) {
+            photoURLInput.addEventListener('blur', function () {
+                const value = photoURLInput.value.trim();
+                if (value && !value.startsWith('https://')) {
+                    photoError.textContent = 'Photo URL must start with https://';
+                } else {
+                    photoError.textContent = '';
+                }
+            });
+        }
+
         reviewForm.addEventListener('submit', async function (e) {
             e.preventDefault();
+
+            // Honeypot check — bots fill hidden fields, real users do not
+            const honeypot = reviewForm.querySelector('input[name="website"]');
+            if (honeypot && honeypot.value) {
+                // Bot detected — show success to avoid revealing mechanism
+                showReviewStatus('Thank you for your review!', 'success');
+                return;
+            }
 
             if (!firebaseReady) {
                 showReviewStatus('Firebase not initialized. Please try again later.', 'error');
@@ -721,19 +879,19 @@ import { getFirestore, collection, addDoc, query, where, orderBy, limit, getDocs
             const message = document.getElementById('reviewMessage').value.trim();
             const photoURL = document.getElementById('photoURL').value.trim();
 
-            // Validation
-            if (!name || !rating || !message) {
-                showReviewStatus('Please fill in all fields', 'error');
+            // Strengthened validation (Requirement 19.4)
+            if (name.length < 2 || name.length > 80) {
+                showReviewStatus('Name must be between 2 and 80 characters.', 'error');
                 return;
             }
 
-            if (name.length < 2) {
-                showReviewStatus('Name must be at least 2 characters', 'error');
+            if (message.length < 10 || message.length > 1000) {
+                showReviewStatus('Review must be between 10 and 1000 characters.', 'error');
                 return;
             }
 
-            if (message.length < 10) {
-                showReviewStatus('Review must be at least 10 characters', 'error');
+            if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+                showReviewStatus('Rating must be an integer between 1 and 5.', 'error');
                 return;
             }
 
@@ -757,6 +915,7 @@ import { getFirestore, collection, addDoc, query, where, orderBy, limit, getDocs
                 }
 
                 // Add review to Firestore
+                const { collection, addDoc, serverTimestamp } = window._firebaseModules;
                 const docRef = await addDoc(collection(db, 'reviews'), {
                     name: name,
                     rating: rating,
@@ -774,6 +933,9 @@ import { getFirestore, collection, addDoc, query, where, orderBy, limit, getDocs
                 // Reset form
                 reviewForm.reset();
 
+                // Rate limiting — disable submit for 60 seconds after successful submission
+                startRateLimit(submitBtn);
+
                 // Reload reviews after a short delay
                 setTimeout(() => {
                     loadReviews();
@@ -782,8 +944,7 @@ import { getFirestore, collection, addDoc, query, where, orderBy, limit, getDocs
             } catch (error) {
                 console.error('❌ Error submitting review:', error);
                 showReviewStatus('Error submitting review. Please try again.', 'error');
-            } finally {
-                // Re-enable submit button
+                // Re-enable submit button on error
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalText;
             }
@@ -846,6 +1007,7 @@ import { getFirestore, collection, addDoc, query, where, orderBy, limit, getDocs
 
         try {
             // Simplified query - only WHERE, no ORDER BY (no composite index needed!)
+            const { collection, query, where, getDocs } = window._firebaseModules;
             const q = query(
                 collection(db, 'reviews'),
                 where('approved', '==', true)
@@ -1022,7 +1184,7 @@ import { getFirestore, collection, addDoc, query, where, orderBy, limit, getDocs
 
     // Create Review Card Element with Avatar Support
     function createReviewCard(review) {
-        const card = document.createElement('div');
+        const card = document.createElement('article');
         card.className = 'review-card scroll-fade-in';
 
         // Format date
@@ -1091,6 +1253,27 @@ import { getFirestore, collection, addDoc, query, where, orderBy, limit, getDocs
             day: 'numeric',
             year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
         });
+    }
+
+    /**
+     * Starts a 60-second rate-limit countdown on the review submit button.
+     * Disables the button and shows a countdown timer, then re-enables it.
+     * @param {HTMLButtonElement} submitBtn - The review form submit button
+     */
+    function startRateLimit(submitBtn) {
+        let seconds = 60;
+        submitBtn.disabled = true;
+        submitBtn.querySelector('span').textContent = `Wait ${seconds}s`;
+        const interval = setInterval(() => {
+            seconds--;
+            if (seconds <= 0) {
+                clearInterval(interval);
+                submitBtn.disabled = false;
+                submitBtn.querySelector('span').textContent = 'Submit Review';
+            } else {
+                submitBtn.querySelector('span').textContent = `Wait ${seconds}s`;
+            }
+        }, 1000);
     }
 
     // Show Review Form Status Message
