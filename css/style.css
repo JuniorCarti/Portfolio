@@ -1,5 +1,5 @@
 /* ============================================
-   MODERN PORTFOLIO - CSS VARIABLES & RESET
+   CSS VARIABLES & RESET
    ============================================ */
 
 :root {
@@ -35,24 +35,24 @@
     --shadow-glow: 0 0 40px rgba(99, 102, 241, 0.3);
 
     /* Spacing */
-    --space-xs: 0.5rem;
-    --space-sm: 1rem;
-    --space-md: 1.5rem;
-    --space-lg: 2rem;
-    --space-xl: 3rem;
-    --space-xxl: 4rem;
+    --space-xs: 0.375rem;
+    --space-sm: 0.75rem;
+    --space-md: 1.25rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+    --space-xxl: 3rem;
 
     /* Typography */
     --font-primary: 'Poppins', sans-serif;
     --font-secondary: 'Space Grotesk', sans-serif;
     --text-xs: 0.75rem;
-    --text-sm: 0.875rem;
-    --text-base: 1rem;
-    --text-lg: 1.125rem;
-    --text-xl: 1.5rem;
-    --text-2xl: 2rem;
-    --text-3xl: 2.5rem;
-    --text-4xl: 3rem;
+    --text-sm: 0.8125rem;
+    --text-base: 0.9375rem;
+    --text-lg: 1.0625rem;
+    --text-xl: 1.25rem;
+    --text-2xl: 1.75rem;
+    --text-3xl: 2.125rem;
+    --text-4xl: 2.5rem;
 
     /* Border Radius */
     --radius-sm: 8px;
@@ -88,14 +88,18 @@
     --hero-text-secondary: #f0f0f0;
 }
 
-/* ============================================
-   RESET & BASE STYLES
-   ============================================ */
-
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+/* Default inline SVG icon sizing */
+svg:not(.svg-sprite svg) {
+    width: 1.25em;
+    height: 1.25em;
+    vertical-align: middle;
+    fill: currentColor;
 }
 
 html {
@@ -110,6 +114,32 @@ body {
     line-height: 1.6;
     overflow-x: hidden;
     transition: background-color var(--transition-slow), color var(--transition-slow);
+}
+
+/* ============================================
+   SKIP LINK & LANDMARKS
+   ============================================ */
+
+.skip-link {
+    position: absolute;
+    top: -100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary);
+    color: #fff;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0 0 0.5rem 0.5rem;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    text-decoration: none;
+    z-index: 10000;
+    transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+    top: 0;
+    outline: 2px solid var(--primary-light);
+    outline-offset: 2px;
 }
 
 /* ============================================
@@ -267,12 +297,24 @@ body {
     align-items: center;
     justify-content: center;
     transition: transform var(--transition-fast);
+    width: 40px;
+    height: 40px;
+}
+
+.theme-toggle svg,
+.mobile-menu-toggle svg {
+    width: 22px;
+    height: 22px;
 }
 
 .theme-toggle:hover,
 .mobile-menu-toggle:hover {
     transform: scale(1.1);
 }
+
+/* ============================================
+   MOBILE MENU
+   ============================================ */
 
 .mobile-menu-toggle {
     display: none;
@@ -318,7 +360,7 @@ body {
 }
 
 /* ============================================
-   GLASS CARD EFFECT
+   GLASS CARD
    ============================================ */
 
 .glass-card {
@@ -413,6 +455,12 @@ body {
     justify-content: center;
 }
 
+.btn svg {
+    width: 1.125em;
+    height: 1.125em;
+    flex-shrink: 0;
+}
+
 /* ============================================
    HERO SECTION
    ============================================ */
@@ -498,6 +546,32 @@ body {
 @media (prefers-reduced-motion: reduce) {
     .hero-video {
         animation: none !important;
+    }
+}
+
+/* Hero poster fallback for mobile - hidden by default on desktop */
+.hero-poster-fallback {
+    display: none;
+}
+
+.hero-poster-fallback img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+}
+
+/* Mobile: hide video and show poster */
+@media (max-width: 768px) {
+    .hero-video {
+        display: none;
+    }
+
+    .hero-poster-fallback {
+        display: block;
     }
 }
 
@@ -612,6 +686,60 @@ body {
     letter-spacing: 0.5px;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
+
+.availability-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #10b981;
+    margin-bottom: var(--space-md);
+}
+
+.pulse-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10b981;
+    animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pulse-dot {
+        animation: none;
+    }
+}
+
+/* Reduced motion: suppress all named persistent animations */
+@media (prefers-reduced-motion: reduce) {
+    .gradient-orb {
+        animation: none !important;
+    }
+
+    .wave {
+        animation: none !important;
+    }
+
+    .avatar-glow {
+        animation: none !important;
+    }
+
+    .floating-badge {
+        animation: none !important;
+    }
+
+    .scroll-indicator {
+        animation: none !important;
+    }
+
+    .wheel {
+        animation: none !important;
+    }
 }
 
 .hero-cta {
@@ -658,8 +786,8 @@ body {
 
 .hero-avatar {
     position: relative;
-    width: 180px;
-    height: 180px;
+    width: 260px;
+    height: 260px;
     border-radius: 50%;
     overflow: hidden;
     background: var(--bg-glass);
@@ -901,10 +1029,6 @@ body {
    ABOUT SECTION
    ============================================ */
 
-/* ============================================
-   ABOUT SECTION
-   ============================================ */
-
 .about {
     position: relative;
     background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
@@ -1003,18 +1127,6 @@ body {
     display: none;
 }
 
-.about-card p {
-    color: var(--text-secondary);
-    margin-bottom: var(--space-md);
-    line-height: 1.8;
-}
-
-.about-stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-md);
-}
-
 .stat-card {
     text-align: center;
     padding: var(--space-lg);
@@ -1085,6 +1197,49 @@ body {
 
 .highlight-card {
     display: none;
+}
+
+/* About Interests Subsection */
+.about-interests {
+    margin-top: var(--space-xxl);
+}
+
+.about-interests-title {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    margin-bottom: var(--space-lg);
+    color: var(--text-primary);
+}
+
+.about-interests-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-md);
+}
+
+.about-interests .interest-card {
+    padding: var(--space-lg);
+}
+
+.about-interests .interest-icon {
+    width: 56px;
+    height: 56px;
+    font-size: var(--text-xl);
+}
+
+.about-interests .interest-card h4 {
+    font-size: var(--text-base);
+    margin-bottom: var(--space-xs);
+}
+
+.about-interests .interest-card p {
+    font-size: var(--text-sm);
+}
+
+@media (max-width: 768px) {
+    .about-interests-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* ============================================
@@ -1160,51 +1315,55 @@ body {
     font-weight: 700;
 }
 
-.skill-progress {
-    display: flex;
-    align-items: center;
-    gap: var(--space-md);
-    margin-bottom: var(--space-md);
-}
 
-.progress-bar {
-    flex: 1;
-    height: 8px;
-    background: var(--bg-tertiary);
-    border-radius: var(--radius-full);
-    overflow: hidden;
-    position: relative;
-}
-
-.progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--primary), var(--accent));
-    border-radius: var(--radius-full);
-    width: var(--progress);
-    animation: progressAnimation 1.5s ease;
-}
-
-@keyframes progressAnimation {
-    from {
-        width: 0;
-    }
-
-    to {
-        width: var(--progress);
-    }
-}
-
-.progress-text {
-    font-weight: 700;
-    color: var(--primary);
-    font-size: var(--text-sm);
-    min-width: 45px;
-}
 
 .skill-description {
     color: var(--text-secondary);
     font-size: var(--text-sm);
     line-height: 1.6;
+}
+
+/* Skill Tag Pills */
+.skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: var(--space-sm);
+}
+
+.skill-tag {
+    padding: 4px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-full);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    color: var(--text-secondary);
+    background: var(--bg-glass);
+    transition: border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.skill-card:hover .skill-tag {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+/* ============================================
+   WORK EXPERIENCE SECTION
+   ============================================ */
+
+.experience-timeline {
+    position: relative;
+    padding-left: var(--space-xl);
+}
+
+.experience-timeline::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, var(--primary), var(--accent));
 }
 
 /* ============================================
@@ -1395,7 +1554,8 @@ body {
     color: var(--text-primary);
 }
 
-.interest-card h3 {
+.interest-card h3,
+.interest-card h4 {
     font-size: var(--text-xl);
     margin-bottom: var(--space-sm);
 }
@@ -1522,6 +1682,18 @@ body {
     font-size: var(--text-xs);
     font-weight: 600;
     color: var(--text-secondary);
+}
+
+/* Project Impact Callout */
+.project-impact {
+    font-size: var(--text-sm);
+    color: var(--primary-light);
+    font-weight: 600;
+    margin-bottom: var(--space-md);
+    padding: var(--space-xs) var(--space-sm);
+    background: rgba(99, 102, 241, 0.08);
+    border-left: 3px solid var(--primary);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 }
 
 /* ============================================
@@ -2072,7 +2244,7 @@ body {
 }
 
 /* ============================================
-   ANIMATIONS
+   ANIMATIONS & KEYFRAMES
    ============================================ */
 
 @keyframes fadeInUp {
@@ -2115,7 +2287,7 @@ body {
 .skills-grid,
 .education-timeline,
 .projects-grid,
-.interests-grid {
+.about-interests-grid {
     opacity: 1;
     visibility: visible;
 }
@@ -2135,7 +2307,7 @@ body {
 }
 
 /* ============================================
-   PREMIUM SCROLL ANIMATIONS (Mercedes-Benz Style)
+   SCROLL REVEAL ANIMATIONS
    ============================================ */
 
 /* Respect user's motion preferences */
