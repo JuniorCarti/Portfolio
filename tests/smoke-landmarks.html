@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Smoke Test: Landmark Structure and Alt Attributes</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #1a1a2e; color: #eee; }
+        .pass { color: #22c55e; }
+        .fail { color: #ef4444; }
+        .summary { margin-top: 20px; padding: 12px; border-radius: 6px; font-weight: bold; }
+        .summary.all-pass { background: rgba(34,197,94,0.15); border: 1px solid #22c55e; }
+        .summary.has-fail { background: rgba(239,68,68,0.15); border: 1px solid #ef4444; }
+        pre { white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+<h1>Smoke Test: Landmark Structure &amp; Alt Attributes</h1>
+<pre id="output"></pre>
+<div id="summary"></div>
+
+<!-- Hidden iframe to load index.html for DOM inspection -->
+<iframe id="testFrame" src="../index.html" style="display:none;" sandbox="allow-same-origin"></iframe>
+
+<script>
+(function() {
+    const output = document.getElementById('output');
+    const summaryEl = document.getElementById('summary');
+    let passed = 0;
+    let failed = 0;
+
+    function log(msg, status) {
+        const line = document.createElement('span');
+        line.className = status;
+        line.textContent = (status === 'pass' ? '✓ PASS' : '✗ FAIL') + ' — ' + msg + '\n';
+        output.appendChild(line);
+        if (status === 'pass') passed++;
+        else failed++;
+    }
+
+    function runTests(doc) {
+        // Test 1: <main id="main-content"> exists
+        const main = doc.querySelector('main#main-content');
+        if (main) {
+            log('<main id="main-content"> exists', 'pass');
+        } else {
+            log('<main id="main-content"> does not exist', 'fail');
+        }
+
+        // Test 2: <header> wrapper exists
+        const header = doc.querySelector('header');
+        if (header) {
+            log('<header> element exists', 'pass');
+        } else {
+            log('<header> element does not exist', 'fail');
+        }
+
+        // Test 3: <footer> wrapper exists
+        const footer = doc.querySelector('footer');
+        if (footer) {
+            log('<footer> element exists', 'pass');
+        } else {
+            log('<footer> element does not exist', 'fail');
+        }
+
+        // Test 4: Every <img> has an alt attribute (value can be empty string)
+        const images = doc.querySelectorAll('img');
+        let imgCount = images.length;
+        let missingAlt = [];
+
+        images.forEach(function(img, index) {
+            if (!img.hasAttribute('alt')) {
+                missingAlt.push(img.src || '(img #' + (index + 1) + ')');
+            }
+        });
+
+        if (imgCount === 0) {
+            log('No <img> elements found (nothing to check)', 'pass');
+        } else if (missingAlt.length === 0) {
+            log('All ' + imgCount + ' <img> elements have an alt attribute', 'pass');
+        } else {
+            log(missingAlt.length + ' of ' + imgCount + ' <img> elements missing alt attribute: ' + missingAlt.join(', '), 'fail');
+        }
+
+        // Summary
+        const total = passed + failed;
+        summaryEl.className = 'summary ' + (failed === 0 ? 'all-pass' : 'has-fail');
+        summaryEl.textContent = passed + '/' + total + ' tests passed' + (failed > 0 ? ' — ' + failed + ' FAILED' : ' — All green!');
+    }
+
+    // Wait for iframe to load then run tests
+    const frame = document.getElementById('testFrame');
+    frame.addEventListener('load', function() {
+        try {
+            var doc = frame.contentDocument || frame.contentWindow.document;
+            runTests(doc);
+        } catch (e) {
+            log('Could not access iframe content (CORS or sandbox issue): ' + e.message, 'fail');
+            summaryEl.className = 'summary has-fail';
+            summaryEl.textContent = 'Tests could not run — see error above.';
+        }
+    });
+})();
+</script>
+</body>
+</html>
